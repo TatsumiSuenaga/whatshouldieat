@@ -6,6 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./cuisine.component.css']
 })
 export class CuisineComponent implements OnInit {
+  criteriaTitle = 'Cuisine';
 
   constructor() { }
 
