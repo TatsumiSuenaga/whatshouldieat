@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./cuisine.component.css']
 })
 export class CuisineComponent implements OnInit {
+  cuisineList = ['Japanese', 'Korean', 'Vietnamese', 'Chinese',
+   'Thai', 'Filipino', 'Mexican', 'Puerto Rican', 'Cuban', 'Greek',
+   'African', 'Italian', 'American'];
   criteriaTitle = 'Cuisine';
 
   constructor() { }
