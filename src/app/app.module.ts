@@ -12,6 +12,7 @@ import { PriceComponent } from './suggestions/price/price.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const appRoutes: Routes = [
+  { path: '', component: AppComponent},
   { path: 'not-found', component: PageNotFoundComponent },
   { path: '**', redirectTo: '/not-found' }
 ];
