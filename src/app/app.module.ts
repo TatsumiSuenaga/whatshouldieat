@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import {RouterModule, Routes } from '@angular/router';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -8,6 +9,12 @@ import { LocationComponent } from './suggestions/location/location.component';
 import { CuisineComponent } from './suggestions/cuisine/cuisine.component';
 import { RatingComponent } from './suggestions/rating/rating.component';
 import { PriceComponent } from './suggestions/price/price.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+
+const appRoutes: Routes = [
+  { path: 'not-found', component: PageNotFoundComponent },
+  { path: '**', redirectTo: '/not-found' }
+];
 
 @NgModule({
   declarations: [
@@ -17,10 +24,12 @@ import { PriceComponent } from './suggestions/price/price.component';
     LocationComponent,
     CuisineComponent,
     RatingComponent,
-    PriceComponent
+    PriceComponent,
+    PageNotFoundComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    RouterModule
   ],
   providers: [],
   bootstrap: [AppComponent]
