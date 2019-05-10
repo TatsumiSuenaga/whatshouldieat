@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+  background-color: #282c34;
+}
+
+.App .container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.App .container .row {
+  margin: 20px 0 20px 0;
+}
+
+
+.App .container .row .col .card {
+  color: rgb(33, 37, 41);
+}
+
+.App .container header {
+  font-size: calc(25px + 2vmin);
+}
