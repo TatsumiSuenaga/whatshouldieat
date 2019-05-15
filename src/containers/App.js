@@ -22,7 +22,8 @@ class App extends Component{
       new SearchItem('Wings'),
       new SearchItem('BBQ')
     ],
-    distance: 10
+    distance: 10,
+    selectedAll: false
   }
 
   doSearchHandler = (event, id) => {
@@ -47,6 +48,18 @@ class App extends Component{
     });
   }
 
+  toggleSelectAllHandler = (event) => {
+    const searchList = [...this.state.searchList];
+    searchList.forEach((searchItem) => {
+      searchItem.doSearch = !searchItem.doSearch;
+    });
+
+    this.setState({
+      selectedAll: !this.state.selectedAll,
+      searchList: searchList
+    });
+  }
+
   render() {
     return (
       <div className="App">
@@ -57,7 +70,7 @@ class App extends Component{
               <Card bg="light" border="light">
                 {/* <Card.Header>Search Criteria</Card.Header> */}
                 <Card.Body>
-                  <Card.Title>What are you in the mood for?</Card.Title>
+                  {/* <Card.Title>What are you in the mood for?</Card.Title> */}
                   <InputGroup>
                     <SearchCriteriaPanel 
                       searchList={this.state.searchList}
@@ -67,8 +80,15 @@ class App extends Component{
               </Card>
             </Col>
           </Row>
+          <Row>
+            <Button variant="success">Search</Button>
+            <Button variant="warning">Randomize</Button>
+            <Button 
+              variant="primary"
+              onClick={(event) => {this.toggleSelectAllHandler()}}>
+                {!this.state.selectedAll ? <span>Select All</span> : <span>Unselect All</span>}</Button>
+          </Row>
           
-          <Button variant="success">Search</Button>
         </Container>
       </div>
     );
