@@ -7,24 +7,46 @@ import SearchCriteriaPanel from '../components/SearchCriteriaPanel';
 import {Button, Container, Card, Row, Col, InputGroup} from 'react-bootstrap';
 
 class App extends Component{
-  state = {
-    searchList: [
-      new SearchItem('Japanese'),
-      new SearchItem('Korean'),
-      new SearchItem('Indian'),
-      new SearchItem('Chinese'),
-      new SearchItem('Thai'),
-      new SearchItem('Mexican'),
-      new SearchItem('Italian'),
-      new SearchItem('Vietnamese'),
-      new SearchItem('Burgers'),
-      new SearchItem('Pizza'),
-      new SearchItem('Wings'),
-      new SearchItem('BBQ')
-    ],
-    distance: 10,
-    selectedAll: false
+  constructor(props) {
+    super(props);
+    this.state = {
+      serverResponse: '',
+      searchList: [
+        new SearchItem('Japanese'),
+        new SearchItem('Korean'),
+        new SearchItem('Indian'),
+        new SearchItem('Chinese'),
+        new SearchItem('Thai'),
+        new SearchItem('Mexican'),
+        new SearchItem('Italian'),
+        new SearchItem('Vietnamese'),
+        new SearchItem('Burgers'),
+        new SearchItem('Pizza'),
+        new SearchItem('Wings'),
+        new SearchItem('BBQ')
+      ],
+      distance: 10,
+      selectedAll: false
+    }
   }
+  // state = {
+  //   searchList: [
+  //     new SearchItem('Japanese'),
+  //     new SearchItem('Korean'),
+  //     new SearchItem('Indian'),
+  //     new SearchItem('Chinese'),
+  //     new SearchItem('Thai'),
+  //     new SearchItem('Mexican'),
+  //     new SearchItem('Italian'),
+  //     new SearchItem('Vietnamese'),
+  //     new SearchItem('Burgers'),
+  //     new SearchItem('Pizza'),
+  //     new SearchItem('Wings'),
+  //     new SearchItem('BBQ')
+  //   ],
+  //   distance: 10,
+  //   selectedAll: false
+  // }
 
   doSearchHandler = (event, id) => {
     const itemId = this.state.searchList.findIndex(item => {
@@ -60,6 +82,16 @@ class App extends Component{
     });
   }
 
+  callServer() {
+    fetch('http://localhost:9000/testServer')
+      .then(res => res.text())
+      .then(res => this.setState({ serverResponse: res }));
+  }
+
+  componentWillMount() {
+    this.callServer();
+  }
+
   render() {
     return (
       <div className="App">
@@ -88,6 +120,7 @@ class App extends Component{
               onClick={(event) => {this.toggleSelectAllHandler()}}>
                 {!this.state.selectedAll ? <span>Select All</span> : <span>Unselect All</span>}</Button>
           </Row>
+          <Row><p>{this.state.serverResponse}</p></Row>
           
         </Container>
       </div>
