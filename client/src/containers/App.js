@@ -29,24 +29,6 @@ class App extends Component{
       selectedAll: false
     }
   }
-  // state = {
-  //   searchList: [
-  //     new SearchItem('Japanese'),
-  //     new SearchItem('Korean'),
-  //     new SearchItem('Indian'),
-  //     new SearchItem('Chinese'),
-  //     new SearchItem('Thai'),
-  //     new SearchItem('Mexican'),
-  //     new SearchItem('Italian'),
-  //     new SearchItem('Vietnamese'),
-  //     new SearchItem('Burgers'),
-  //     new SearchItem('Pizza'),
-  //     new SearchItem('Wings'),
-  //     new SearchItem('BBQ')
-  //   ],
-  //   distance: 10,
-  //   selectedAll: false
-  // }
 
   doSearchHandler = (event, id) => {
     const itemId = this.state.searchList.findIndex(item => {
@@ -83,7 +65,7 @@ class App extends Component{
   }
 
   callServer() {
-    fetch('http://localhost:9000/testServer')
+    fetch('http://localhost:9000/restaurantSearch')
       .then(res => res.text())
       .then(res => this.setState({ serverResponse: res }));
   }
