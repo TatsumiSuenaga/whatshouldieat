@@ -1,8 +1,6 @@
 var express = require('express');
 var axios = require('axios');
-const dotenv = require('dotenv');
-
-dotenv.config();
+require('dotenv').config();
 var router = express.Router();
 
 const baseUrl = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
@@ -23,7 +21,8 @@ router.get('/', function(req, res, next) {
       }
     })
     .then(function (response) {
-        res.send(response);
+        // console.log(response.data);
+        res.send(response.data);
     })
     .catch(function(error) {
         console.log(error);

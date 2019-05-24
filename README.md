@@ -15,8 +15,8 @@ Runs the server app in nodemon
 Runs both the client and server concurrently
 
 ## Environment file
-Store API Keys and Passwords in a `./server/main.env` file
-Here is the example template of `main.env`
+Store API Keys and Passwords in a `./server/.env` file
+Here is the example template of `.env`
 ```
 GOOGLE_API_KEY=key
 etc...
