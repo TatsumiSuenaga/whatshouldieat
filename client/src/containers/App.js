@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 import './App.css';
 import SearchItem from '../models/searchItem';
 import SearchCriteriaPanel from '../components/SearchCriteriaPanel';
@@ -25,9 +26,13 @@ class App extends Component{
         new SearchItem('Wings'),
         new SearchItem('BBQ')
       ],
-      distance: 10,
-      selectedAll: false
+      distance: 3000,
+      selectedAll: false,
+      latitude: '',
+      longitude: '',
+      responseList : []
     }
+    this.getUserLocation = this.getUserLocation.bind(this);
   }
 
   doSearchHandler = (event, id) => {
@@ -64,14 +69,65 @@ class App extends Component{
     });
   }
 
-  callServer() {
-    fetch('http://localhost:9000/restaurantSearch')
-      .then(res => res.text())
-      .then(res => this.setState({ serverResponse: res }));
+  restaurantSearchHandler = (event) => {
+    const searchList = [...this.state.searchList];
+    const restaurantQueryList = searchList.filter((searchItem) => {
+      return searchItem.doSearch === true;
+    });
+    if (restaurantQueryList.length > 0) {
+      axios.get('http://localhost:9000/restaurantSearch', {
+        params: {
+          location: this.state.latitude + ',' + this.state.longitude,
+          radius: this.state.distance,
+          keyword: restaurantQueryList[0].searchType
+        }
+      })
+      .then((response) =>  {
+        const responseList = response.data;
+        if (responseList) {
+          console.log(responseList);
+          let responseString = '';
+          responseList.forEach((restaurant) => {
+            console.log(restaurant.name);
+            responseString += restaurant.name + ', ';
+          });
+          this.setState({ 
+            responseList: responseList,
+            serverResponse: responseString 
+          });
+        } else {
+          console.log('No restaurants found');
+          this.setState({ serverResponse: 'No restaurants found!' });
+        }
+      })
+      .catch((error) => {
+          console.log(error);
+          this.setState({ serverResponse: 'Search Error!' });
+      })
+    } else {
+      this.setState({ serverResponse: 'Please select a cuisine!' });
+    }
   }
 
-  componentWillMount() {
-    this.callServer();
+  getUserLocation() {
+    const location = window.navigator && window.navigator.geolocation;
+    if (location) {
+      location.getCurrentPosition((position) => {
+        this.setState({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
+      }, (error) => {
+        this.setState({
+          latitude: 'error-latitude',
+          longitude: 'error-longitude'
+        });
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.getUserLocation();
   }
 
   render() {
@@ -84,7 +140,7 @@ class App extends Component{
               <Card bg="light" border="light">
                 {/* <Card.Header>Search Criteria</Card.Header> */}
                 <Card.Body>
-                  {/* <Card.Title>What are you in the mood for?</Card.Title> */}
+                  <Card.Title>Choose the cuisine</Card.Title>
                   <InputGroup>
                     <SearchCriteriaPanel 
                       searchList={this.state.searchList}
@@ -95,7 +151,9 @@ class App extends Component{
             </Col>
           </Row>
           <Row>
-            <Button variant="success">Search</Button>
+            <Button
+             variant="success"
+             onClick={(event) => {this.restaurantSearchHandler()}}>Search</Button>
             <Button variant="warning">Randomize</Button>
             <Button 
               variant="primary"
