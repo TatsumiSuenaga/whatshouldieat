@@ -5,7 +5,7 @@ import SearchItem from '../models/searchItem';
 import SearchCriteriaPanel from '../components/SearchCriteriaPanel';
 
 //Bootstrap
-import {Button, Container, Card, Row, Col, InputGroup} from 'react-bootstrap';
+import {Button, Container, Card, Row, Col, InputGroup, FormControl} from 'react-bootstrap';
 
 class App extends Component{
   constructor(props) {
@@ -26,13 +26,17 @@ class App extends Component{
         new SearchItem('Wings'),
         new SearchItem('BBQ')
       ],
-      distance: 3000,
+      distance: 3,
       selectedAll: false,
       latitude: '',
       longitude: '',
       responseList : []
     }
     this.getUserLocation = this.getUserLocation.bind(this);
+  }
+
+  onChangeHandler = (event) => {
+    this.setState({[event.target.name]: event.target.value });
   }
 
   doSearchHandler = (event, id) => {
@@ -70,11 +74,12 @@ class App extends Component{
   }
 
   restaurantSearchHandler = (event) => {
+    const distance = this.state.distance;
     const searchList = [...this.state.searchList];
     const restaurantQueryList = searchList.filter((searchItem) => {
       return searchItem.doSearch === true;
     });
-    if (restaurantQueryList.length > 0) {
+    if (restaurantQueryList.length > 0 && !isNaN(distance) && distance !== "" && distance > 0 && distance <= 10) {
       this.setState({ 
         responseList: [],
         serverResponse: '' 
@@ -83,7 +88,7 @@ class App extends Component{
         axios.get('http://localhost:9000/restaurantSearch', {
           params: {
             location: this.state.latitude + ',' + this.state.longitude,
-            radius: this.state.distance,
+            radius: distance * 1610,
             keyword: restaurantItem.searchType
           }
         })
@@ -111,7 +116,28 @@ class App extends Component{
         });
       });
     } else {
-      this.setState({ serverResponse: 'Please select a cuisine!' });
+      let errorResponse = '';
+      if (distance !== "" && !isNaN(distance)) {
+        if ((distance <= 0 || distance > 10) && restaurantQueryList.length > 0) {
+          errorResponse = 'SearchError: distance is ' + distance + ' which is not within 0 and 10';
+        }
+        else if ((distance > 0 && distance <= 10) && restaurantQueryList.length <= 0) {
+          errorResponse = 'SearchError: no cuisine chosen';
+        }
+        else if ((distance <= 0 || distance > 10) && restaurantQueryList.length <= 0) {
+          errorResponse = 'SearchError: no cuisine chosen and distance is ' + distance + ' which is not within 0 and 10';
+        }
+      } else {
+        if (restaurantQueryList.length > 0) {
+          errorResponse = 'SearchError: distance is not within 0 and 10';
+        }
+        else if (restaurantQueryList.length <= 0) {
+          errorResponse = 'SearchError: no cuisine chosen and distance is not within 0 and 10';
+        }
+      }
+      this.setState({ serverResponse: errorResponse });
+      console.log(errorResponse);
+      
     }
   }
 
@@ -137,6 +163,7 @@ class App extends Component{
   }
 
   render() {
+    const distance = this.state.distance;
     return (
       <div className="App">
         <Container>
@@ -147,10 +174,22 @@ class App extends Component{
                 {/* <Card.Header>Search Criteria</Card.Header> */}
                 <Card.Body>
                   <Card.Title>Choose the cuisine</Card.Title>
-                  <InputGroup>
+                  <InputGroup className="mb-3">
                     <SearchCriteriaPanel 
                       searchList={this.state.searchList}
                       changed={this.doSearchHandler}/>
+                  </InputGroup>
+                  <InputGroup className="mb-3">
+                    <InputGroup.Prepend>
+                          <InputGroup.Text id="basic-addon1">Distance (in miles)</InputGroup.Text>
+                        </InputGroup.Prepend>
+                        <FormControl
+                          name="distance"
+                          aria-label="distance"
+                          aria-describedby="basic-addon1"
+                          value={distance}
+                          onChange={this.onChangeHandler}
+                        />
                   </InputGroup>
                 </Card.Body>
               </Card>
