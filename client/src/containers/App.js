@@ -75,35 +75,41 @@ class App extends Component{
       return searchItem.doSearch === true;
     });
     if (restaurantQueryList.length > 0) {
-      axios.get('http://localhost:9000/restaurantSearch', {
-        params: {
-          location: this.state.latitude + ',' + this.state.longitude,
-          radius: this.state.distance,
-          keyword: restaurantQueryList[0].searchType
-        }
-      })
-      .then((response) =>  {
-        const responseList = response.data;
-        if (responseList) {
-          console.log(responseList);
-          let responseString = '';
-          responseList.forEach((restaurant) => {
-            console.log(restaurant.name);
-            responseString += restaurant.name + ', ';
-          });
-          this.setState({ 
-            responseList: responseList,
-            serverResponse: responseString 
-          });
-        } else {
-          console.log('No restaurants found');
-          this.setState({ serverResponse: 'No restaurants found!' });
-        }
-      })
-      .catch((error) => {
-          console.log(error);
-          this.setState({ serverResponse: 'Search Error!' });
-      })
+      this.setState({ 
+        responseList: [],
+        serverResponse: '' 
+      });
+      restaurantQueryList.forEach((restaurantItem) => {
+        axios.get('http://localhost:9000/restaurantSearch', {
+          params: {
+            location: this.state.latitude + ',' + this.state.longitude,
+            radius: this.state.distance,
+            keyword: restaurantItem.searchType
+          }
+        })
+        .then((response) =>  {
+          const responseList = response.data;
+          if (responseList) {
+            console.log(responseList);
+            let responseString = '';
+            responseList.forEach((restaurant) => {
+              console.log(restaurant.name);
+              responseString += restaurant.name + ', ';
+            });
+            this.setState({ 
+              responseList: [...this.state.responseList, ...responseList],
+              serverResponse: this.state.serverResponse + responseString 
+            });
+          } else {
+            console.log('No restaurants found');
+            this.setState({ serverResponse: 'No restaurants found!' });
+          }
+        })
+        .catch((error) => {
+            console.log(error);
+            this.setState({ serverResponse: 'Search Error!' });
+        });
+      });
     } else {
       this.setState({ serverResponse: 'Please select a cuisine!' });
     }
