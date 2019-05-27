@@ -63,12 +63,13 @@ class App extends Component{
 
   toggleSelectAllHandler = (event) => {
     const searchList = [...this.state.searchList];
+    const toggleValue = !this.state.selectedAll;
     searchList.forEach((searchItem) => {
-      searchItem.doSearch = !searchItem.doSearch;
+      searchItem.doSearch = toggleValue;
     });
 
     this.setState({
-      selectedAll: !this.state.selectedAll,
+      selectedAll: toggleValue,
       searchList: searchList
     });
   }
