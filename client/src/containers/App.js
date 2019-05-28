@@ -74,6 +74,18 @@ class App extends Component{
     });
   }
 
+  randomizeSearchListHandler = (event) => {
+    const searchList = [...this.state.searchList];
+
+    searchList.forEach((searchItem) => {
+      searchItem.doSearch = (Math.round(Math.random())) ? true : false;
+    });
+
+    this.setState({
+      searchList: searchList
+    });
+  }
+
   restaurantSearchHandler = (event) => {
     const distance = this.state.distance;
     const searchList = [...this.state.searchList];
@@ -200,7 +212,9 @@ class App extends Component{
             <Button
              variant="success"
              onClick={(event) => {this.restaurantSearchHandler()}}>Search</Button>
-            <Button variant="warning">Randomize</Button>
+            <Button
+             variant="warning"
+             onClick={(event)=> {this.randomizeSearchListHandler()}}>Randomize</Button>
             <Button 
               variant="primary"
               onClick={(event) => {this.toggleSelectAllHandler()}}>
