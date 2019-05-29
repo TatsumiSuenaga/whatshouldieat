@@ -3,7 +3,7 @@ import SearchCriteriaItem from './SearchCriteriaItem';
 
 class SearchCriteriaPanel extends PureComponent {
   render() {
-    return this.props.searchList.map((searchItem, index) => {
+    return this.props.searchList.map((searchItem) => {
       return (
         <SearchCriteriaItem
           searchType={searchItem.searchType}
