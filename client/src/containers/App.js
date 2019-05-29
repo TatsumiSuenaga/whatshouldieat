@@ -5,7 +5,7 @@ import SearchItem from '../models/searchItem';
 import SearchCriteriaPanel from '../components/SearchCriteriaPanel';
 
 //Bootstrap
-import {Button, Container, Card, Row, Col, InputGroup, FormControl} from 'react-bootstrap';
+import {Button, Container, Card, Row, Col, Form, FormControl} from 'react-bootstrap';
 
 class App extends Component{
   constructor(props) {
@@ -74,7 +74,20 @@ class App extends Component{
     });
   }
 
+  randomizeSearchListHandler = (event) => {
+    const searchList = [...this.state.searchList];
+
+    searchList.forEach((searchItem) => {
+      searchItem.doSearch = (Math.round(Math.random())) ? true : false;
+    });
+
+    this.setState({
+      searchList: searchList
+    });
+  }
+
   restaurantSearchHandler = (event) => {
+    event.preventDefault();
     const distance = this.state.distance;
     const searchList = [...this.state.searchList];
     const restaurantQueryList = searchList.filter((searchItem) => {
@@ -175,36 +188,37 @@ class App extends Component{
                 {/* <Card.Header>Search Criteria</Card.Header> */}
                 <Card.Body>
                   <Card.Title>Choose the cuisine</Card.Title>
-                  <InputGroup className="mb-3">
-                    <SearchCriteriaPanel 
-                      searchList={this.state.searchList}
-                      changed={this.doSearchHandler}/>
-                  </InputGroup>
-                  <InputGroup className="mb-3">
-                    <InputGroup.Prepend>
-                          <InputGroup.Text id="basic-addon1">Distance (in miles)</InputGroup.Text>
-                        </InputGroup.Prepend>
-                        <FormControl
-                          name="distance"
-                          aria-label="distance"
-                          aria-describedby="basic-addon1"
-                          value={distance}
-                          onChange={this.onChangeHandler}
-                        />
-                  </InputGroup>
+                  <Form onSubmit={this.restaurantSearchHandler}>
+                    <Form.Group controlId="searchCuisineList">
+                      <SearchCriteriaPanel 
+                        searchList={this.state.searchList}
+                        changed={this.doSearchHandler}/>
+                    </Form.Group>
+                    <Form.Group controlId="searchDistance">
+                          <Form.Label>Distance (in miles)</Form.Label>
+                          <FormControl
+                            name="distance"
+                            aria-label="distance"
+                            aria-describedby="basic-addon1"
+                            value={distance}
+                            onChange={this.onChangeHandler}
+                          />
+                    </Form.Group>
+                    <Button
+                    variant="success"
+                    type="submit">Search</Button>
+                    <Button
+                    variant="warning"
+                    onClick={(event)=> {this.randomizeSearchListHandler()}}>Randomize</Button>
+                    <Button 
+                      variant="primary"
+                      onClick={(event) => {this.toggleSelectAllHandler()}}>
+                        {!this.state.selectedAll ? <span>Select All</span> : <span>Unselect All</span>}</Button>
+                  
+                  </Form>
                 </Card.Body>
               </Card>
             </Col>
-          </Row>
-          <Row>
-            <Button
-             variant="success"
-             onClick={(event) => {this.restaurantSearchHandler()}}>Search</Button>
-            <Button variant="warning">Randomize</Button>
-            <Button 
-              variant="primary"
-              onClick={(event) => {this.toggleSelectAllHandler()}}>
-                {!this.state.selectedAll ? <span>Select All</span> : <span>Unselect All</span>}</Button>
           </Row>
           <Row><p>{this.state.serverResponse}</p></Row>
           

@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 
-import {InputGroup} from 'react-bootstrap';
+import {Form} from 'react-bootstrap';
 
 class SearchCriteriaItem extends Component {
 
   render() {
       return (
-        <InputGroup.Prepend>
-          <InputGroup.Checkbox 
+          <Form.Check
+            inline
+            type="checkbox"
+            id="default-checkbox"
+            label={this.props.searchType}
             onChange={this.props.change}
-            checked={this.props.searchValue} ></InputGroup.Checkbox>
-          <InputGroup.Text>{this.props.searchType}</InputGroup.Text>
-        </InputGroup.Prepend>
+            checked={this.props.searchValue} />
       )
   }
 }
