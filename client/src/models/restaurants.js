@@ -1,4 +1,5 @@
 export const restaurant = {
+    id: '',
     name: '',
     address: '',
     rating: '',
