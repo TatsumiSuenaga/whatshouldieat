@@ -1,10 +1,7 @@
+import { combineReducers } from 'redux';
 import * as SearchActions from '../actions/actions';
 
-const initialState = {
-    results: []
-}
-
-function searchResultsReducer(state = initialState, action) {
+function searchResultsReducer(state = [], action) {
     switch (action.type) {
         case SearchActions.ADD_SEARCH_RESULTS:
             return Object.assign({}, state, {
@@ -19,4 +16,8 @@ function searchResultsReducer(state = initialState, action) {
     }
 }
 
-export default searchResultsReducer;
+const reducers = combineReducers({
+    searchResultsReducer
+});
+
+export default reducers;
