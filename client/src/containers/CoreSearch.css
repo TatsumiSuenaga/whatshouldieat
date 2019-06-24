@@ -1,11 +1,11 @@
-.App {
+.CoreSearch {
   text-align: center;
   background-color: #282c34;
   /* background: rgb(74,69,148);
   background: linear-gradient(90deg, rgba(74,69,148,1) 0%, rgba(9,9,121,1) 35%, rgba(40,44,52,1) 100%);  */
 }
 
-.App .container {
+.CoreSearch .container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -14,21 +14,21 @@
   color: white;
 }
 
-.App .container .row {
+.CoreSearch .container .row {
   margin-top: 20px;
   margin-bottom: 20px;
 }
 
-.App .container .row .btn {
+.CoreSearch .container .row .btn {
   margin: 5px;
 }
 
 
-.App .container .row .col .card {
+.CoreSearch .container .row .col .card {
   color: rgb(33, 37, 41);
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
 }
 
-.App .container header {
+.CoreSearch .container header {
   font-size: calc(25px + 2vmin);
 }
