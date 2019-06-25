@@ -1,11 +1,13 @@
 import React, {Component} from 'react';
+
 import axios from 'axios';
-import './CoreSearch.css';
+
 import SearchItem from '../models/searchItem';
-import SearchCriteriaPanel from '../components/SearchCriteriaPanel';
+import CoreTitlePanel from '../components/CoreTitlePanel';
+import CoreSearchResultsPanel from './../components/CoreSearchResultsPanel';
 
 //Bootstrap
-import {Button, Container, Card, Row, Col, Form, FormControl} from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
 export default class CoreSearch extends Component{
   constructor(props) {
@@ -30,7 +32,8 @@ export default class CoreSearch extends Component{
       selectedAll: false,
       latitude: '',
       longitude: '',
-      responseList : []
+      responseList : [],
+      searchType: 'surprise-me',
     }
     this.getUserLocation = this.getUserLocation.bind(this);
   }
@@ -155,6 +158,18 @@ export default class CoreSearch extends Component{
     }
   }
 
+  hasInputHandler = () => {
+      this.setState((prevState) => {
+        return {searchType: 'has-input'}
+      });
+  }
+
+  surpriseMeHandler = () => {
+    this.setState((prevState) => {
+      return {searchType: 'surprise-me'}
+    });
+  }
+
   getUserLocation() {
     const location = window.navigator && window.navigator.geolocation;
     if (location) {
@@ -177,52 +192,38 @@ export default class CoreSearch extends Component{
   }
 
   render() {
-    const distance = this.state.distance;
+    const divStyle = {
+        textAlign: 'center',
+        backgroundColor: '#282c34'
+    }
+
+    const containerStyle = {
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        color: 'white'
+    }
     return (
-      <div className="CoreSearch">
-        <Container>
-          <header>What Should I Eat?</header>
-          <Row>
-            <Col>
-              <Card bg="light" border="light">
-                <Card.Body>
-                  <Card.Title>Choose the cuisine</Card.Title>
-                  <Form onSubmit={this.restaurantSearchHandler}>
-                    <Form.Group controlId="searchCuisineList">
-                      <SearchCriteriaPanel 
-                        searchList={this.state.searchList}
-                        changed={this.doSearchHandler}/>
-                    </Form.Group>
-                    <Form.Group controlId="searchDistance">
-                          <Form.Label>Distance (in miles)</Form.Label>
-                          <FormControl
-                            name="distance"
-                            aria-label="distance"
-                            aria-describedby="basic-addon1"
-                            value={distance}
-                            onChange={this.onChangeHandler}
-                          />
-                    </Form.Group>
-                    <Button
-                    variant="success"
-                    type="submit">Search</Button>
-                    <Button
-                    variant="warning"
-                    onClick={(event)=> {this.randomizeSearchListHandler()}}>Randomize</Button>
-                    <Button 
-                      variant="primary"
-                      onClick={(event) => {this.toggleSelectAllHandler()}}>
-                        {!this.state.selectedAll ? <span>Select All</span> : <span>Unselect All</span>}</Button>
-                  
-                  </Form>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-          <Row><p>{this.state.serverResponse}</p></Row>
-          
-        </Container>
-      </div>
+        <div style={divStyle}>
+            <Container style={containerStyle}>
+                <CoreTitlePanel 
+                    searchType={this.state.searchType}
+                    hasInputHandler={this.hasInputHandler}
+                    surpriseMeHandler={this.surpriseMeHandler}
+                    restaurantSearchHandler={this.restaurantSearchHandler} 
+                    searchList={this.state.searchList}
+                    doSearchHandler={this.doSearchHandler}
+                    distance={this.state.distance}
+                    onChangeHandler={this.onChangeHandler}
+                    randomizeSearchListHandler={this.randomizeSearchListHandler}
+                    toggleSelectAllHandler={this.toggleSelectAllHandler}
+                    selectedAll={this.state.selectedAll}/>
+                <CoreSearchResultsPanel 
+                    serverResponse={this.state.serverResponse}/>
+            </Container>
+        </div>
     );
   }
 }
