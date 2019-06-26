@@ -1,6 +1,5 @@
 import React from 'react';
 
-import Aux from './../hoc/Aux';
 import SearchCriteriaPanel from './SearchCriteriaPanel';
 
 import {Button, Card, Form, FormControl} from 'react-bootstrap';
@@ -11,7 +10,7 @@ const coreUserInputPanel = (props) => {
     };
 
     return (
-        <Aux>
+        <Card.Body>
             <Card.Title>Choose the cuisine</Card.Title>
             <Form onSubmit={props.restaurantSearchHandler}>
                 <Form.Group controlId="searchCuisineList">
@@ -41,7 +40,7 @@ const coreUserInputPanel = (props) => {
                         {!props.selectedAll ? <span>Select All</span> : <span>Unselect All</span>}
                 </Button>
             </Form>
-        </Aux>
+        </Card.Body>
     );
 }
 

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Aux from './../hoc/Aux';
 import CoreUserInputPanel from './CoreUserInputPanel';
 
 //Bootstrap
@@ -20,7 +19,16 @@ const coreTitlePanel = (props) => {
 
     const cardStyle = {
       color: 'rgb(33, 37, 41)',
-      boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
+      boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+      minHeight: '85vh',
+      minWidth: '500px'
+    }
+
+    const cardBodyStyle = {
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
     }
     
     let panel = null;
@@ -28,14 +36,16 @@ const coreTitlePanel = (props) => {
     switch (props.searchType) {
       case ('surprise-me') :
         panel = (
-          <Aux>
-            <Card.Title>Do you know what you want?</Card.Title>
-            <Button style={btnStyle}
-              onClick={props.surpriseMeHandler}>No, Surprise Me</Button>
-            <Button 
-              style={btnStyle}
-              onClick={props.hasInputHandler}>Yes</Button>
-          </Aux>
+          <Card.Body style={cardBodyStyle}>
+            <Card.Title>Anything in mind?</Card.Title>
+            <div>
+              <Button style={btnStyle}
+                onClick={props.surpriseMeHandler}>No idea, surprise me</Button>
+              <Button 
+                style={btnStyle}
+                onClick={props.hasInputHandler}>Yes</Button>
+            </div>
+          </Card.Body>
         );
         break;
       case ('has-input') :
@@ -59,7 +69,6 @@ const coreTitlePanel = (props) => {
       <Row style={rowStyle}>
         <Col>
           <Card bg="light" border="light" style={cardStyle}>
-            <Card.Body></Card.Body>
             { panel }
           </Card>
         </Col>
