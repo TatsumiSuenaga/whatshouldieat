@@ -6,7 +6,7 @@ const header = (props) => {
     const navStyle = {
         backgroundColor: 'transparent',
         fontFamily: 'Bungee Shade', 
-        fontSize: '1.2rem'
+        fontSize: '1.13rem'
         // fontFamily: 'Staatliches', for both, esp body
         // fontFamily: 'Just Another Hand', for head 
         // fontFamily: 'Nanum Pen Script', !for body combo^

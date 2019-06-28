@@ -9,6 +9,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #f8f9fa;
   font-family: 'Staatliches', cursive;
+  padding: 10px 0;
 }
 
 code {

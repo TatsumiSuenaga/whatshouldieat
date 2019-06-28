@@ -197,7 +197,7 @@ export default class CoreSearch extends Component{
     }
 
     const containerStyle = {
-        minHeight: '100vh',
+        minHeight: '90vh',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
