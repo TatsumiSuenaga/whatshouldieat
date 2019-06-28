@@ -7,7 +7,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f8f9fa;
+  background-color: #fffde7; /*#f8f9fa; */
   font-family: 'Staatliches', cursive;
   padding: 10px 0;
 }
