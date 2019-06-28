@@ -193,8 +193,7 @@ export default class CoreSearch extends Component{
 
   render() {
     const divStyle = {
-        textAlign: 'center',
-        backgroundColor: '#282c34'
+        textAlign: 'center'
     }
 
     const containerStyle = {
@@ -203,7 +202,7 @@ export default class CoreSearch extends Component{
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        color: 'white'
+        color: 'rgb(33, 37, 41)' // 'white'
     }
     return (
         <div style={divStyle}>

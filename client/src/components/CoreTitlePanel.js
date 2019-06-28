@@ -14,14 +14,18 @@ const coreTitlePanel = (props) => {
     };
 
     const btnStyle = {
-      margin: '5px'
+      margin: '5px',
+      backgroundColor: '#ff0051c2',
+      borderColor: '#ff0051c2'
     }
 
     const cardStyle = {
-      color: 'rgb(33, 37, 41)',
-      boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
-      minHeight: '85vh',
-      minWidth: '500px'
+      // color: 'rgb(33, 37, 41)',
+      background: 'transparent',
+      border: '0',
+      // boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
+      // minHeight: '85vh',
+      // minWidth: '500px'
     }
 
     const cardBodyStyle = {
@@ -31,19 +35,31 @@ const coreTitlePanel = (props) => {
       alignItems: 'center'
     }
     
+    const spanStyle = {
+      fontWeight: 'bold'
+    }
+
+    const btnGroupStyle = {
+      marginTop: '25px'
+    }
+
+    const cardTitleStyle = {
+      fontSize: '1.7rem',
+      fontWeight: 50
+    }
     let panel = null;
 
     switch (props.searchType) {
       case ('surprise-me') :
         panel = (
           <Card.Body style={cardBodyStyle}>
-            <Card.Title>Anything in mind?</Card.Title>
-            <div>
+            <Card.Title style={cardTitleStyle}>Do you have anything in mind?</Card.Title>
+            <div style={btnGroupStyle}>
               <Button style={btnStyle}
-                onClick={props.surpriseMeHandler}>No idea, surprise me</Button>
+                onClick={props.surpriseMeHandler}>No idea, that's why I'm here <span style={spanStyle}>(duh)</span></Button>
               <Button 
                 style={btnStyle}
-                onClick={props.hasInputHandler}>Yes</Button>
+                onClick={props.hasInputHandler}>Surprisingly, yes</Button>
             </div>
           </Card.Body>
         );
@@ -68,7 +84,7 @@ const coreTitlePanel = (props) => {
     return (
       <Row style={rowStyle}>
         <Col>
-          <Card bg="light" border="light" style={cardStyle}>
+          <Card style={cardStyle}>
             { panel }
           </Card>
         </Col>

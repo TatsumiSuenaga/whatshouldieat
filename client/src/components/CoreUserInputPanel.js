@@ -28,9 +28,11 @@ const coreUserInputPanel = (props) => {
                         onChange={props.onChangeHandler}/>
                 </Form.Group>
                 <Button
+                    style={btnStyle}
                     variant="success"
                     type="submit">Search</Button>
                 <Button
+                    style={btnStyle}
                     variant="warning"
                     onClick={(event)=> {props.randomizeSearchListHandler()}}>Randomize</Button>
                 <Button

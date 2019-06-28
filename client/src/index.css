@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Bungee+Hairline|Bungee+Shade|Cabin+Sketch|Codystar|DM+Sans|Fredericka+the+Great|Hind|Josefin+Sans|Just+Another+Hand|Libre+Barcode+128+Text|Lilita+One|Love+Ya+Like+A+Sister|Nanum+Gothic|Nanum+Pen+Script|Oxygen|Quicksand|Rubik|Schoolbell|Staatliches|Thasadith&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Bungee+Shade|Cabin+Sketch|Fredericka+the+Great|Just+Another+Hand|Love+Ya+Like+A+Sister|Nanum+Pen+Script|Staatliches&display=swap');
 
 body {
   margin: 0;
@@ -7,9 +7,12 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+  font-family: 'Staatliches', cursive;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
