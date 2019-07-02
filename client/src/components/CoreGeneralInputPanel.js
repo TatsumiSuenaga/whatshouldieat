@@ -16,8 +16,6 @@ const coreGeneralInputPanel = (props) => {
         paddingBottom: '30px'
     }
 
-    
-
     return (
         <Card.Body>
             <Card.Title style={cardTitleStyle}>A couple of questions before we choose your restaurant</Card.Title>
@@ -26,10 +24,10 @@ const coreGeneralInputPanel = (props) => {
                 <Form.Row id="price" style={rowPadding}>
                     <ButtonToolbar>
                         <ToggleButtonGroup type="radio" name="price">
-                            <ToggleButton value={0}>$</ToggleButton>
-                            <ToggleButton value={1}>$$</ToggleButton>
-                            <ToggleButton value={2}>$$$</ToggleButton>
-                            <ToggleButton value={3}>$$$$</ToggleButton>
+                            <ToggleButton value={1}>$</ToggleButton>
+                            <ToggleButton value={2}>$$</ToggleButton>
+                            <ToggleButton value={3}>$$$</ToggleButton>
+                            <ToggleButton value={4}>$$$$</ToggleButton>
                             <ToggleButton value={-1}>Any</ToggleButton>
                         </ToggleButtonGroup>
                     </ButtonToolbar>
@@ -67,13 +65,13 @@ const coreGeneralInputPanel = (props) => {
                         <Form.Check
                             inline
                             type="radio"
-                            label="In a hurry"
+                            label="In a hurry (< 30mins)"
                             name="travelDurationRadios"
                             id="travelDurationRadios1" />
                         <Form.Check
                             inline
                             type="radio"
-                            label="On the clock"
+                            label="On the clock (30 mins ~ 1 hour)"
                             name="travelDurationRadios"
                             id="travelDurationRadios2" />
                         <Form.Check

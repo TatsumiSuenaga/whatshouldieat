@@ -33,7 +33,11 @@ export default class CoreSearch extends Component{
       latitude: '',
       longitude: '',
       responseList : [],
-      searchType: null,
+      searchType: 'SURPRISE',
+      price: -1,
+      rating: -1,
+      transportationType: 'car',
+      travelDuration: -1
     }
     this.getUserLocation = this.getUserLocation.bind(this);
   }
@@ -106,7 +110,9 @@ export default class CoreSearch extends Component{
           params: {
             location: this.state.latitude + ',' + this.state.longitude,
             radius: distance * 1610,
-            keyword: restaurantItem.searchType
+            keyword: restaurantItem.searchType,
+            rating: this.state.rating,
+            price: this.state.price
           }
         })
         .then((response) =>  {
