@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import CoreUserInputPanel from './CoreUserInputPanel';
+import CoreGeneralInputPanel from './CoreGeneralInputPanel';
 
 //Bootstrap
 import {Button, Card, Row, Col} from 'react-bootstrap';
@@ -51,17 +52,8 @@ const coreTitlePanel = (props) => {
 
     switch (props.searchType) {
       case ('surprise-me') :
-        panel = (
-          <Card.Body style={cardBodyStyle}>
-            <Card.Title style={cardTitleStyle}>Do you have anything in mind?</Card.Title>
-            <div style={btnGroupStyle}>
-              <Button style={btnStyle}
-                onClick={props.surpriseMeHandler}>No idea, that's why I'm here <span style={spanStyle}>(duh)</span></Button>
-              <Button 
-                style={btnStyle}
-                onClick={props.hasInputHandler}>Surprisingly, yes</Button>
-            </div>
-          </Card.Body>
+        panel = ( 
+          <CoreGeneralInputPanel />
         );
         break;
       case ('has-input') :
@@ -78,7 +70,18 @@ const coreTitlePanel = (props) => {
         );
         break;
       default:
-        panel = null;
+        panel = (
+          <Card.Body style={cardBodyStyle}>
+            <Card.Title style={cardTitleStyle}>Do you have anything in mind?</Card.Title>
+            <div style={btnGroupStyle}>
+              <Button style={btnStyle}
+                onClick={props.surpriseMeHandler}>No idea, that's why I'm here <span style={spanStyle}>(duh)</span></Button>
+              <Button 
+                style={btnStyle}
+                onClick={props.hasInputHandler}>Surprisingly, yes</Button>
+            </div>
+          </Card.Body>
+        );
     };
 
     return (

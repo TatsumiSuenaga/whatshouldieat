@@ -33,7 +33,7 @@ export default class CoreSearch extends Component{
       latitude: '',
       longitude: '',
       responseList : [],
-      searchType: 'surprise-me',
+      searchType: null,
     }
     this.getUserLocation = this.getUserLocation.bind(this);
   }
