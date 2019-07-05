@@ -3,13 +3,8 @@ var axios = require('axios');
 require('dotenv').config();
 var router = express.Router();
 
-const BASE_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
+// General defaults for all Google Searchs
 const API_KEY = process.env.GOOGLE_API_KEY;
-const DEFAULT_LOCATION = '40.029832231894524,-83.01501735712759';
-const DEFAULT_RADIUS = '2500';
-const TYPE = 'restaurant';
-const DEFAULT_SEARCH_TYPE = 'SURPRISE';
-
 const CUISINE_LIST = [
   'Japanese',
   'Korean',
@@ -25,13 +20,23 @@ const CUISINE_LIST = [
   'BBQ'
 ];
 
-function getRandomCuisine() {
+// Specific defaults for Google Places Nearby Search
+const BASE_NEARBY_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?';
+const DEFAULT_LOCATION = '40.029832231894524,-83.01501735712759';
+const DEFAULT_RADIUS = '2500';
+const TYPE = 'restaurant';
+
+// Specific defaults for Google Places Detail Search
+const BASE_DETAIL_URL = 'https://maps.googleapis.com/maps/api/place/details/json?';
+const DEFAULT_FIELDS = 'opening_hours,website,price_level'
+
+const getRandomFromArray = (arr) => {
   let min = 0;
-  let max = CUISINE_LIST.length;
-  return Math.floor(Math.random() * (max - min + 1) + min);
+  let max = arr.length;
+  return arr[Math.floor(Math.random() * (max - min + 1) + min)];
 }
 
-function sortByPriceAndRating(price, rating, results) {
+const sortByPriceAndRating = (price, rating, results) => {
   let sortedResults = [];
   if ((rating && price) && !(rating === -1 && price === -1)) {
     sortedResults = results.filter(restaurant => {
@@ -44,22 +49,21 @@ function sortByPriceAndRating(price, rating, results) {
   return sortedResults;
 }
 
-router.get('/', function(req, res, next) {
+//travelDuration does not matter
+router.get('/', function(req, res, next) { // 'surprise_me'
   //init google api get request
-  const location = (req.query.location) ? req.query.location : DEFAULT_LOCATION;
+  const location = (req.query.location) ? req.query.location : DEFAULT_LOCATION; // change this before launch, cannot support default location
   const radius = (req.query.radius) ? req.query.radius : DEFAULT_RADIUS;
-  const search = (req.query.search_type) ? req.query.search_typ : DEFAULT_SEARCH_TYPE;
+  const keyword = (req.query.keyword) ? req.query.keyword : getRandomFromArray(CUISINE_LIST);
 
-  //sorting
+  //sorting, if any of the below has a value of -1, then it is irrelevant in sorting
   const rating = req.query.rating;
   const price = req.query.price;
+  // const travelDuration = req.query.travelDuration;
 
-  let keyword = req.query.keyword;
-
-  if (!keyword || search === 'DEFAULT_SEARCH_TYPE') {
-    keyword = getRandomCuisine();
-  }   
-  axios.get(BASE_URL, {
+  // add min/max price as price if price != -1. else do
+  let randomRestaurant;
+  axios.get(BASE_NEARBY_SEARCH_URL, {
       params: {
         location: location,
         radius: radius,
@@ -69,13 +73,39 @@ router.get('/', function(req, res, next) {
         key: API_KEY
       }
     })
-    .then(function (response) {
-        //console.log(response.data.results);
-        res.send(sortByPriceAndRating(parseInt(price, 10), parseInt(rating, 10), response.data.results));
+    .then((response) => {
+        const resultList = sortByPriceAndRating(parseInt(price, 10), parseInt(rating, 10), response.data.results);
+        if (!Array.isArray(resultList) || !resultList.length) {
+          throw new Error('no_restaurants');
+        }
+        randomRestaurant = getRandomFromArray(resultList);
+        // console.log(randomRestaurant);
+        // console.log(randomRestaurant.place_id);
+        return axios.get(BASE_DETAIL_URL, {
+          params: {
+            placeid: randomRestaurant.place_id,
+            fields: DEFAULT_FIELDS,
+            key: API_KEY
+          }
+        });
     })
-    .catch(function(error) {
+    .then((response) => {
+        res.send({
+          id: randomRestaurant.id,
+          name: randomRestaurant.name,
+          rating: randomRestaurant.rating,
+          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : response.data.result.price_level,
+          opening_hours: response.data.result.opening_hours,
+          website: response.data.result.website
+        });
+    })
+    .catch((error) => {
         console.log(error);
-    })
+        if (error.name === 'no_restaurants') {
+          res.status(404).send({error: 'No restaurants found!'});
+        }
+        
+    });
 });
 
 module.exports = router;
