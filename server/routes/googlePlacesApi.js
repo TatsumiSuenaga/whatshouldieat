@@ -30,11 +30,19 @@ const TYPE = 'restaurant';
 const BASE_DETAIL_URL = 'https://maps.googleapis.com/maps/api/place/details/json?';
 const DEFAULT_FIELDS = 'opening_hours,website,price_level'
 
+// Specific defaults for Google Places Photo Search
+const BASE_PHOTO_URL ='https://maps.googleapis.com/maps/api/place/photo?';
+const DEFAULT_MAX_WIDTH = '350';
+
+// Specific defaults for Google Distance Matrix Search
+const BASE_DISTANCE_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json?';
+
+
 const getRandomFromArray = (arr) => {
   let min = 0;
   let max = arr.length;
   return arr[Math.floor(Math.random() * (max - min + 1) + min)];
-}
+};
 
 const sortByPriceAndRating = (price, rating, results) => {
   let sortedResults = [];
@@ -47,19 +55,61 @@ const sortByPriceAndRating = (price, rating, results) => {
     sortedResults = results;
   }
   return sortedResults;
+};
+
+const getPlaceDetail = (restaurant) => {
+  return axios.get(BASE_DETAIL_URL, {
+    params: {
+      placeid: restaurant.place_id,
+      fields: DEFAULT_FIELDS,
+      key: API_KEY
+    }
+  });
+};
+
+const getPlacePhoto = (restaurantPhoto) => {
+  return axios.get(BASE_PHOTO_URL, {
+    params: {
+      photoreference: restaurantPhoto.photo_reference,
+      maxwidth: DEFAULT_MAX_WIDTH,
+      key: API_KEY
+    }
+  });
+};
+
+const getPlaceDistance = (restaurant, location, mode) => {
+  return axios.get(BASE_DISTANCE_URL, {
+    params: {
+      origins: location,
+      destinations: 'place_id:' + restaurant.place_id,
+      mode: mode,
+      key: API_KEY
+    }
+  });
+};
+
+const getPlaceDetailedInfo = (restaurant, location, mode) => {
+  let apiArray = [getPlaceDetail(restaurant)];
+  // if (restaurant.photos) {
+  //   return axios.all([getPlaceDetail(restaurant), getPlacePhoto(restaurant.photos[0])]);
+  // }
+  return axios.all(apiArray);
 }
 
 //travelDuration does not matter
 router.get('/', function(req, res, next) { // 'surprise_me'
-  //init google api get request
+  // init google api get request
   const location = (req.query.location) ? req.query.location : DEFAULT_LOCATION; // change this before launch, cannot support default location
   const radius = (req.query.radius) ? req.query.radius : DEFAULT_RADIUS;
   const keyword = (req.query.keyword) ? req.query.keyword : getRandomFromArray(CUISINE_LIST);
 
-  //sorting, if any of the below has a value of -1, then it is irrelevant in sorting
+  // sorting, if any of the below has a value of -1, then it is irrelevant in sorting
   const rating = req.query.rating;
   const price = req.query.price;
-  // const travelDuration = req.query.travelDuration;
+
+  // Distance Matrix fields
+  const travelDuration = req.query.travelDuration;
+  const travelMode = req.query.travelMode;
 
   // add min/max price as price if price != -1. else do
   let randomRestaurant;
@@ -79,25 +129,34 @@ router.get('/', function(req, res, next) { // 'surprise_me'
           throw new Error('no_restaurants');
         }
         randomRestaurant = getRandomFromArray(resultList);
-        // console.log(randomRestaurant);
-        // console.log(randomRestaurant.place_id);
-        return axios.get(BASE_DETAIL_URL, {
-          params: {
-            placeid: randomRestaurant.place_id,
-            fields: DEFAULT_FIELDS,
-            key: API_KEY
-          }
-        });
+        return getPlaceDetailedInfo(randomRestaurant, location, travelMode,);
+        
     })
-    .then((response) => {
+    .then((results) => {
+      if (results.length > 1) {
+        console.log('multiple api calls complete');
         res.send({
           id: randomRestaurant.id,
           name: randomRestaurant.name,
           rating: randomRestaurant.rating,
-          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : response.data.result.price_level,
-          opening_hours: response.data.result.opening_hours,
-          website: response.data.result.website
+          cuisine: keyword,
+          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : esults[0].data.result.price_level,
+          opening_hours: results[0].data.result.opening_hours,
+          website: results[0].data.result.website,
+          // photo: results[1].data
         });
+      } else {
+        console.log('no photos');
+        res.send({
+          id: randomRestaurant.id,
+          name: randomRestaurant.name,
+          rating: randomRestaurant.rating,
+          cuisine: keyword,
+          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : esults[0].data.result.price_level,
+          opening_hours: results[0].data.result.opening_hours,
+          website: results[0].data.result.website
+        });
+      }
     })
     .catch((error) => {
         console.log(error);
