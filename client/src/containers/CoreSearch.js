@@ -120,10 +120,14 @@ export default class CoreSearch extends Component{
           if (responseList) {
             console.log(responseList);
             let responseString = '';
-            responseList.forEach((restaurant) => {
-              console.log(restaurant.name);
-              responseString += restaurant.name + ', ';
-            });
+            // comment for now as it is only a single object returned
+            // responseList.forEach((restaurant) => {
+            //   console.log(restaurant.name);
+            //   responseString += restaurant.name + ', ';
+            // });
+
+            responseString = responseList.name;
+            console.log(responseString);
             this.setState({ 
               responseList: [...this.state.responseList, ...responseList],
               serverResponse: this.state.serverResponse + responseString 

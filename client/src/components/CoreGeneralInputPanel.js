@@ -23,7 +23,7 @@ const coreGeneralInputPanel = (props) => {
                 <Form.Row><Form.Label style={labelRow}>Price range?</Form.Label></Form.Row>
                 <Form.Row id="price" style={rowPadding}>
                     <ButtonToolbar>
-                        <ToggleButtonGroup type="radio" name="price">
+                        <ToggleButtonGroup type="radio" name="price" defaultValue={-1}>
                             <ToggleButton value={1}>$</ToggleButton>
                             <ToggleButton value={2}>$$</ToggleButton>
                             <ToggleButton value={3}>$$$</ToggleButton>
@@ -58,7 +58,8 @@ const coreGeneralInputPanel = (props) => {
                             type="radio"
                             label="On a car"
                             name="transportationTypeRadios"
-                            id="transportationTypeRadios4" />
+                            id="transportationTypeRadios4"
+                            checked={true} />
                 </Form.Row>
                 <Form.Row><Form.Label style={labelRow}>How much time do you have? </Form.Label></Form.Row>
                 <Form.Row id="travelDuration" style={rowPadding}>
@@ -79,12 +80,13 @@ const coreGeneralInputPanel = (props) => {
                             type="radio"
                             label="Time is a social construct"
                             name="travelDurationRadios"
+                            checked={true}
                             id="travelDurationRadios3" />
                 </Form.Row>
                 <Form.Row><Form.Label style={labelRow}>Rating at least</Form.Label></Form.Row>
                 <Form.Row id="rating" style={rowPadding}>
                     <ButtonToolbar>
-                        <ToggleButtonGroup type="radio" name="rating">
+                        <ToggleButtonGroup type="radio" name="rating" defaultValue={-1}>
                             <ToggleButton value={0}>1</ToggleButton>
                             <ToggleButton value={1}>2</ToggleButton>
                             <ToggleButton value={2}>3</ToggleButton>

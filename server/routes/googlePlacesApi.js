@@ -90,9 +90,10 @@ const getPlaceDistance = (restaurant, location, mode) => {
 
 const getPlaceDetailedInfo = (restaurant, location, mode) => {
   let apiArray = [getPlaceDetail(restaurant)];
-  // if (restaurant.photos) {
-  //   return axios.all([getPlaceDetail(restaurant), getPlacePhoto(restaurant.photos[0])]);
-  // }
+  if (restaurant.photos) {
+    apiArray.push(getPlacePhoto(restaurant.photos[0]));
+  }
+  apiArray.push(getPlaceDistance(restaurant, location, mode));
   return axios.all(apiArray);
 }
 
@@ -109,7 +110,7 @@ router.get('/', function(req, res, next) { // 'surprise_me'
 
   // Distance Matrix fields
   const travelDuration = req.query.travelDuration;
-  const travelMode = req.query.travelMode;
+  const travelMode = 'driving'; // req.query.travelMode;
 
   // add min/max price as price if price != -1. else do
   let randomRestaurant;
@@ -140,10 +141,12 @@ router.get('/', function(req, res, next) { // 'surprise_me'
           name: randomRestaurant.name,
           rating: randomRestaurant.rating,
           cuisine: keyword,
-          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : esults[0].data.result.price_level,
+          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : results[0].data.result.price_level,
           opening_hours: results[0].data.result.opening_hours,
           website: results[0].data.result.website,
-          // photo: results[1].data
+          //photo: results[1].data,
+          distance: results[2].data.rows[0].elements[0].distance,
+          duration: results[2].data.rows[0].elements[0].duration
         });
       } else {
         console.log('no photos');
@@ -152,7 +155,7 @@ router.get('/', function(req, res, next) { // 'surprise_me'
           name: randomRestaurant.name,
           rating: randomRestaurant.rating,
           cuisine: keyword,
-          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : esults[0].data.result.price_level,
+          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : results[0].data.result.price_level,
           opening_hours: results[0].data.result.opening_hours,
           website: results[0].data.result.website
         });
