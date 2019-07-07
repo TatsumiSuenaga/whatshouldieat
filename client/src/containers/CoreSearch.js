@@ -33,11 +33,11 @@ export default class CoreSearch extends Component{
       latitude: '',
       longitude: '',
       responseList : [],
-      searchType: 'SURPRISE',
+      searchType: 'surprise',
       price: -1,
       rating: -1,
-      transportationType: 'car',
-      travelDuration: -1
+      transportationType: 'driving',
+      travelDuration: 0
     }
     this.getUserLocation = this.getUserLocation.bind(this);
   }
@@ -106,13 +106,15 @@ export default class CoreSearch extends Component{
         serverResponse: '' 
       });
       restaurantQueryList.forEach((restaurantItem) => {
-        axios.get('http://localhost:9000/restaurantSearch', {
+        axios.get('http://localhost:9000/restaurantSearch/surprise_me', {
           params: {
             location: this.state.latitude + ',' + this.state.longitude,
             radius: distance * 1610,
             keyword: restaurantItem.searchType,
             rating: this.state.rating,
-            price: this.state.price
+            price: this.state.price,
+            travelDuration: this.state.travelDuration,
+            travelMode: this.state.transportationType
           }
         })
         .then((response) =>  {

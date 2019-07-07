@@ -25,6 +25,7 @@ const BASE_NEARBY_SEARCH_URL = 'https://maps.googleapis.com/maps/api/place/nearb
 const DEFAULT_LOCATION = '40.029832231894524,-83.01501735712759';
 const DEFAULT_RADIUS = '2500';
 const TYPE = 'restaurant';
+const TIME_CONSTRAINT = 'TIME_CONSTRAINT'; // constant to check whether search will be affected by a time constraint
 
 // Specific defaults for Google Places Detail Search
 const BASE_DETAIL_URL = 'https://maps.googleapis.com/maps/api/place/details/json?';
@@ -37,6 +38,27 @@ const DEFAULT_MAX_WIDTH = '350';
 // Specific defaults for Google Distance Matrix Search
 const BASE_DISTANCE_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json?';
 
+const getBaseSearchParams = (location, radius, keyword, price) => {
+  let params = {
+    location: location,
+    radius: radius, 
+    type: TYPE,
+    // opennow: true,
+  };
+
+  if (price > -1) {
+    params.minprice = price;
+    params.maxprice = price;
+  }
+
+  if (keyword !== TIME_CONSTRAINT) {
+    params.keyword = keyword;
+  }
+  params.key = API_KEY;
+  return {
+    params: params
+  };
+}
 
 const getRandomFromArray = (arr) => {
   let min = 0;
@@ -44,18 +66,23 @@ const getRandomFromArray = (arr) => {
   return arr[Math.floor(Math.random() * (max - min + 1) + min)];
 };
 
-const sortByPriceAndRating = (price, rating, results) => {
+const sortByRating = (rating, results) => {
   let sortedResults = [];
-  if ((rating && price) && !(rating === -1 && price === -1)) {
+  if (rating && rating !== -1) {
     sortedResults = results.filter(restaurant => {
-      return ((price > -1) ? parseInt(restaurant.price_level, 10) === price : true)
-        && ((rating > -1) ? parseInt(restaurant.rating, 10) >= rating : true);
+      return (rating > -1) ? parseInt(restaurant.rating, 10) >= rating : true;
     });
   } else {
     sortedResults = results;
   }
   return sortedResults;
 };
+
+const checkForNoRestaurants = (list, lineNo) => {
+  if (!Array.isArray(list) || !list.length) {
+    throw new Error('@Line ' + lineNo + ': no_restaurants');
+  }
+}
 
 const getPlaceDetail = (restaurant) => {
   return axios.get(BASE_DETAIL_URL, {
@@ -77,6 +104,14 @@ const getPlacePhoto = (restaurantPhoto) => {
   });
 };
 
+const getPlaceDetailedInfo = (restaurant) => {
+  let apiArray = [getPlaceDetail(restaurant)];
+  if (restaurant.photos) {
+    apiArray.push(getPlacePhoto(restaurant.photos[0]));
+  }
+  return axios.all(apiArray);
+}
+
 const getPlaceDistance = (restaurant, location, mode) => {
   return axios.get(BASE_DISTANCE_URL, {
     params: {
@@ -88,85 +123,116 @@ const getPlaceDistance = (restaurant, location, mode) => {
   });
 };
 
-const getPlaceDetailedInfo = (restaurant, location, mode) => {
-  let apiArray = [getPlaceDetail(restaurant)];
-  if (restaurant.photos) {
-    apiArray.push(getPlacePhoto(restaurant.photos[0]));
-  }
-  apiArray.push(getPlaceDistance(restaurant, location, mode));
+const getManyPlacesDistance = (restaurantList, location, mode) => {
+  const apiArray = restaurantList.map(restaurant => {
+    // console.log(restaurant);
+    return getPlaceDistance(restaurant, location, mode);
+  });
+  // console.log(apiArray);
   return axios.all(apiArray);
 }
 
+const combineAndOrSortByTravelDuration = (restaurantList, distanceList, travelDuration) => {
+  let combineList = [];
+  if (travelDuration > -1) {
+    const timeConstraint = (travelDuration === 0) ? 360 : 960;
+    for (let i = 0; i < restaurantList.length; i++) {
+      const tempDistanceList = distanceList[i].data.rows[0]
+      // console.log('combine loop')
+      // console.log(restaurantList[i].name + ' ' + restaurantList[i].place_id);
+      // console.log(distanceList[i].config.params.destinations);
+      // console.log(tempDistanceList.elements[0].duration.value);
+      if (parseInt(tempDistanceList.elements[0].duration.value) <= timeConstraint) {
+              // console.log('added ' + restaurantList[i].name);
+        combineList.push({
+          id: restaurantList[i].id,
+          name: restaurantList[i].name,
+          place_id: restaurantList[i].place_id,
+          photos: restaurantList[i].photos,
+          rating: restaurantList[i].rating,
+          cuisine: 'none',
+          price_level: restaurantList[i].price_level,
+          distance: tempDistanceList.elements[0].distance,
+          duration: tempDistanceList.elements[0].duration
+        });
+      }
+    }
+  } else {
+    combineList.push({
+      id: restaurantList[0].id,
+      name: restaurantList[0].name,
+      place_id: restaurantList[i].place_id,
+      photos: restaurantList[i].photos,
+      rating: restaurantList[0].rating,
+      cuisine: 'none',
+      price_level: restaurantList[0].price_level,
+      distance: distanceList[0].data.rows ? distanceList[0].data.rows[0].elements[0].distance : null,
+      duration: distanceList[0].data.rows ? distanceList[0].data.rows[0].elements[0].duration : null
+    });
+  }
+
+  return combineList;
+}
+
 //travelDuration does not matter
-router.get('/', function(req, res, next) { // 'surprise_me'
+router.get('/surprise_me', function(req, res, next) {
+  // Distance Matrix fields
+  const travelDuration = parseInt(req.query.travelDuration);
+  const travelMode = req.query.travelMode;
+
   // init google api get request
   const location = (req.query.location) ? req.query.location : DEFAULT_LOCATION; // change this before launch, cannot support default location
-  const radius = (req.query.radius) ? req.query.radius : DEFAULT_RADIUS;
-  const keyword = (req.query.keyword) ? req.query.keyword : getRandomFromArray(CUISINE_LIST);
+  const radius = (req.query.radius) ? parseInt(req.query.radius) : DEFAULT_RADIUS;
+  // const keyword = (req.query.keyword) ? req.query.keyword : getRandomFromArray(CUISINE_LIST);
+  const keyword = (travelDuration > -1) ? 'TIME_CONSTRAINT' : getRandomFromArray(CUISINE_LIST);
 
   // sorting, if any of the below has a value of -1, then it is irrelevant in sorting
-  const rating = req.query.rating;
-  const price = req.query.price;
+  const rating = parseInt(req.query.rating);
+  const price = parseInt(req.query.price);
 
-  // Distance Matrix fields
-  const travelDuration = req.query.travelDuration;
-  const travelMode = 'driving'; // req.query.travelMode;
-
-  // add min/max price as price if price != -1. else do
+  // add min/maxprice params as price if price != -1. else do
   let randomRestaurant;
-  axios.get(BASE_NEARBY_SEARCH_URL, {
-      params: {
-        location: location,
-        radius: radius,
-        keyword: keyword, 
-        type: TYPE,
-        opennow: true,
-        key: API_KEY
-      }
-    })
+  let restaurantList;
+  axios.get(BASE_NEARBY_SEARCH_URL, getBaseSearchParams(location, radius, keyword, price))
     .then((response) => {
-        const resultList = sortByPriceAndRating(parseInt(price, 10), parseInt(rating, 10), response.data.results);
-        if (!Array.isArray(resultList) || !resultList.length) {
-          throw new Error('no_restaurants');
-        }
-        randomRestaurant = getRandomFromArray(resultList);
-        return getPlaceDetailedInfo(randomRestaurant, location, travelMode,);
-        
+      const responseList = response.data.results;
+      // console.log(responseList);
+      checkForNoRestaurants(responseList, '199');
+      
+      // mandatory rating sort of result list
+      let resultList = sortByRating(rating, responseList);
+      checkForNoRestaurants(resultList, '203');
+
+      // we limit results to 25 as anymore would be unnecessary and cause performance issues
+      resultList.length = resultList.length > 25 ? 25 : resultList.length;
+
+      restaurantList = (keyword === TIME_CONSTRAINT)
+                        ? resultList : [getRandomFromArray(resultList)];
+      return getManyPlacesDistance(restaurantList, location, travelMode);
     })
+    .then((distanceList) => {
+      // console.log(distanceList);
+      restaurantList = combineAndOrSortByTravelDuration(restaurantList, distanceList, travelDuration);
+      checkForNoRestaurants(restaurantList, '215');
+      randomRestaurant = (keyword === TIME_CONSTRAINT) 
+                          ? getRandomFromArray(restaurantList) : restaurantList[0];
+      return getPlaceDetailedInfo(randomRestaurant);
+    }) 
     .then((results) => {
+      randomRestaurant.opening_hours = results[0].data.result.opening_hours;
+      randomRestaurant.website = results[0].data.result.website;
+      // has found photo
       if (results.length > 1) {
-        console.log('multiple api calls complete');
-        res.send({
-          id: randomRestaurant.id,
-          name: randomRestaurant.name,
-          rating: randomRestaurant.rating,
-          cuisine: keyword,
-          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : results[0].data.result.price_level,
-          opening_hours: results[0].data.result.opening_hours,
-          website: results[0].data.result.website,
-          //photo: results[1].data,
-          distance: results[2].data.rows[0].elements[0].distance,
-          duration: results[2].data.rows[0].elements[0].duration
-        });
-      } else {
-        console.log('no photos');
-        res.send({
-          id: randomRestaurant.id,
-          name: randomRestaurant.name,
-          rating: randomRestaurant.rating,
-          cuisine: keyword,
-          price_level: randomRestaurant.price_level ? randomRestaurant.price_level : results[0].data.result.price_level,
-          opening_hours: results[0].data.result.opening_hours,
-          website: results[0].data.result.website
-        });
+        // console.log('multiple api calls complete');
+        // randomRestaurant.photo = results[1].data;
       }
+      res.send(randomRestaurant);
     })
     .catch((error) => {
-        console.log(error);
+        // console.log(error);
         if (error.name === 'no_restaurants') {
           res.status(404).send({error: 'No restaurants found!'});
         }
-        
     });
 });
 
