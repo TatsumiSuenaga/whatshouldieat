@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import SearchCriteriaItem from './SearchCriteriaItem';
 
-class SearchCriteriaPanel extends PureComponent {
+class SearchCriteriaItemPanel extends PureComponent {
   render() {
     return this.props.searchList.map((searchItem) => {
       return (
@@ -15,4 +15,4 @@ class SearchCriteriaPanel extends PureComponent {
   }
 }
 
-export default SearchCriteriaPanel;
+export default SearchCriteriaItemPanel;
