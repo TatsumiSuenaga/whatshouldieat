@@ -38,12 +38,19 @@ const DEFAULT_MAX_WIDTH = '350';
 // Specific defaults for Google Distance Matrix Search
 const BASE_DISTANCE_URL = 'https://maps.googleapis.com/maps/api/distancematrix/json?';
 
+const resultNotFoundError = (message) => {
+  return {
+    name: 'ResultNotFound Error',
+    message: message
+  };
+}
+
 const getBaseSearchParams = (location, radius, keyword, price) => {
   let params = {
     location: location,
     radius: radius, 
     type: TYPE,
-    // opennow: true,
+    opennow: true,
   };
 
   if (price > -1) {
@@ -78,9 +85,9 @@ const sortByRating = (rating, results) => {
   return sortedResults;
 };
 
-const checkForNoRestaurants = (list, lineNo) => {
+const checkForNoRestaurants = (list, func) => {
   if (!Array.isArray(list) || !list.length) {
-    throw new Error('@Line ' + lineNo + ': no_restaurants');
+    throw resultNotFoundError('@ ' + func + ': No Restaurants Found');
   }
 }
 
@@ -132,7 +139,7 @@ const getManyPlacesDistance = (restaurantList, location, mode) => {
   return axios.all(apiArray);
 }
 
-const combineAndOrSortByTravelDuration = (restaurantList, distanceList, travelDuration) => {
+const combineAndOrSortByTravelDuration = (keyword, restaurantList, distanceList, travelDuration) => {
   let combineList = [];
   if (travelDuration > -1) {
     const timeConstraint = (travelDuration === 0) ? 360 : 960;
@@ -150,7 +157,7 @@ const combineAndOrSortByTravelDuration = (restaurantList, distanceList, travelDu
           place_id: restaurantList[i].place_id,
           photos: restaurantList[i].photos,
           rating: restaurantList[i].rating,
-          cuisine: 'none',
+          cuisine: null,
           price_level: restaurantList[i].price_level,
           distance: tempDistanceList.elements[0].distance,
           duration: tempDistanceList.elements[0].duration
@@ -161,10 +168,10 @@ const combineAndOrSortByTravelDuration = (restaurantList, distanceList, travelDu
     combineList.push({
       id: restaurantList[0].id,
       name: restaurantList[0].name,
-      place_id: restaurantList[i].place_id,
-      photos: restaurantList[i].photos,
+      place_id: restaurantList[0].place_id,
+      photos: restaurantList[0].photos,
       rating: restaurantList[0].rating,
-      cuisine: 'none',
+      cuisine: keyword,
       price_level: restaurantList[0].price_level,
       distance: distanceList[0].data.rows ? distanceList[0].data.rows[0].elements[0].distance : null,
       duration: distanceList[0].data.rows ? distanceList[0].data.rows[0].elements[0].duration : null
@@ -174,7 +181,6 @@ const combineAndOrSortByTravelDuration = (restaurantList, distanceList, travelDu
   return combineList;
 }
 
-//travelDuration does not matter
 router.get('/surprise_me', function(req, res, next) {
   // Distance Matrix fields
   const travelDuration = parseInt(req.query.travelDuration);
@@ -185,6 +191,7 @@ router.get('/surprise_me', function(req, res, next) {
   const radius = (req.query.radius) ? parseInt(req.query.radius) : DEFAULT_RADIUS;
   // const keyword = (req.query.keyword) ? req.query.keyword : getRandomFromArray(CUISINE_LIST);
   const keyword = (travelDuration > -1) ? 'TIME_CONSTRAINT' : getRandomFromArray(CUISINE_LIST);
+  console.log(keyword);
 
   // sorting, if any of the below has a value of -1, then it is irrelevant in sorting
   const rating = parseInt(req.query.rating);
@@ -197,11 +204,11 @@ router.get('/surprise_me', function(req, res, next) {
     .then((response) => {
       const responseList = response.data.results;
       // console.log(responseList);
-      checkForNoRestaurants(responseList, '199');
+      checkForNoRestaurants(responseList, 'Initial Get Request');
       
       // mandatory rating sort of result list
       let resultList = sortByRating(rating, responseList);
-      checkForNoRestaurants(resultList, '203');
+      checkForNoRestaurants(resultList, 'Sort By Rating');
 
       // we limit results to 25 as anymore would be unnecessary and cause performance issues
       resultList.length = resultList.length > 25 ? 25 : resultList.length;
@@ -212,8 +219,8 @@ router.get('/surprise_me', function(req, res, next) {
     })
     .then((distanceList) => {
       // console.log(distanceList);
-      restaurantList = combineAndOrSortByTravelDuration(restaurantList, distanceList, travelDuration);
-      checkForNoRestaurants(restaurantList, '215');
+      restaurantList = combineAndOrSortByTravelDuration(keyword, restaurantList, distanceList, travelDuration);
+      checkForNoRestaurants(restaurantList, 'Combine and Sort By Travel Duration');
       randomRestaurant = (keyword === TIME_CONSTRAINT) 
                           ? getRandomFromArray(restaurantList) : restaurantList[0];
       return getPlaceDetailedInfo(randomRestaurant);
@@ -229,9 +236,9 @@ router.get('/surprise_me', function(req, res, next) {
       res.send(randomRestaurant);
     })
     .catch((error) => {
-        // console.log(error);
-        if (error.name === 'no_restaurants') {
-          res.status(404).send({error: 'No restaurants found!'});
+        console.log(error.name + ': ' + error.message);
+        if (error.name === 'ResultNotFound Error') {
+          res.status(404).send('No restaurants found');
         }
     });
 });

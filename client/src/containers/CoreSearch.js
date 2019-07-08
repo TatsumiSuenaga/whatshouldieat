@@ -37,7 +37,8 @@ export default class CoreSearch extends Component{
       price: -1,
       rating: -1,
       transportationType: 'driving',
-      travelDuration: 0
+      travelDuration: -1,
+      isLoading: false
     }
     this.getUserLocation = this.getUserLocation.bind(this);
   }
@@ -103,7 +104,8 @@ export default class CoreSearch extends Component{
     if (restaurantQueryList.length > 0 && !isNaN(distance) && distance !== "" && distance > 0 && distance <= 10) {
       this.setState({ 
         responseList: [],
-        serverResponse: '' 
+        serverResponse: '',
+        isLoading: true
       });
       restaurantQueryList.forEach((restaurantItem) => {
         axios.get('http://localhost:9000/restaurantSearch/surprise_me', {
@@ -132,11 +134,15 @@ export default class CoreSearch extends Component{
             console.log(responseString);
             this.setState({ 
               responseList: [...this.state.responseList, ...responseList],
-              serverResponse: this.state.serverResponse + responseString 
+              serverResponse: this.state.serverResponse + responseString,
+              isLoading: false 
             });
           } else {
             console.log('No restaurants found');
-            this.setState({ serverResponse: 'No restaurants found!' });
+            this.setState({ 
+              serverResponse: 'No restaurants found!',
+              isLoading: false
+             });
           }
         })
         .catch((error) => {
@@ -168,6 +174,50 @@ export default class CoreSearch extends Component{
       console.log(errorResponse);
       
     }
+  }
+
+  surpriseMeSearchHandler = (event) => {
+    this.setState({ 
+      responseList: [],
+      serverResponse: '',
+      isLoading: true
+    });
+    axios.get('http://localhost:9000/restaurantSearch/surprise_me', {
+      params: {
+        location: this.state.latitude + ',' + this.state.longitude,
+        radius: this.state.distance * 1610,
+        rating: this.state.rating,
+        price: this.state.price,
+        travelDuration: this.state.travelDuration,
+        travelMode: this.state.transportationType
+      }
+    })
+    .then((response) =>  {
+      const randomRestaurant = response.data;
+      if (randomRestaurant) {
+        // console.log(randomRestaurant);
+        this.setState({ 
+          responseList: [randomRestaurant],
+          isLoading: false 
+        });
+      } else {
+        // console.log('No restaurants found');
+        this.setState({ 
+          serverResponse: 'No restaurants found!',
+          isLoading: false
+          });
+      }
+      this.setState((prevState) => {
+        return {searchType: 'did-search'}
+      });
+    })
+    .catch((error) => {
+        this.setState({ serverResponse: 'No Restaurants Found!'});
+        console.log(this.state.serverResponse);
+        this.setState((prevState) => {
+          return {searchType: 'did-search'}
+        });
+    });
   }
 
   hasInputHandler = () => {
@@ -223,6 +273,7 @@ export default class CoreSearch extends Component{
                     searchType={this.state.searchType}
                     hasInputHandler={this.hasInputHandler}
                     surpriseMeHandler={this.surpriseMeHandler}
+                    surpriseMeSearchHandler={this.surpriseMeSearchHandler}
                     restaurantSearchHandler={this.restaurantSearchHandler} 
                     searchList={this.state.searchList}
                     doSearchHandler={this.doSearchHandler}
@@ -231,7 +282,8 @@ export default class CoreSearch extends Component{
                     randomizeSearchListHandler={this.randomizeSearchListHandler}
                     toggleSelectAllHandler={this.toggleSelectAllHandler}
                     selectedAll={this.state.selectedAll}/>
-                <CoreSearchResultsPanel 
+                <CoreSearchResultsPanel
+                    responseList={this.state.responseList} 
                     serverResponse={this.state.serverResponse}/>
             </Container>
         </div>

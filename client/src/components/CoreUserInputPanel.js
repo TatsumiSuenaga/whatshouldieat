@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SearchCriteriaPanel from './SearchCriteriaPanel';
+import SearchCriteriaItemPanel from './SearchCriteriaItemPanel';
 
 import {Button, Card, Form, FormControl} from 'react-bootstrap';
 
@@ -14,7 +14,7 @@ const coreUserInputPanel = (props) => {
             <Card.Title>Choose the cuisine</Card.Title>
             <Form onSubmit={props.restaurantSearchHandler}>
                 <Form.Group controlId="searchCuisineList">
-                    <SearchCriteriaPanel 
+                    <SearchCriteriaItemPanel 
                     searchList={props.searchList}
                     changed={props.doSearchHandler}/>
                 </Form.Group>

@@ -53,7 +53,9 @@ const coreTitlePanel = (props) => {
     switch (props.searchType) {
       case ('surprise-me') :
         panel = ( 
-          <CoreGeneralInputPanel />
+          <CoreGeneralInputPanel
+            onChangeHandler={props.onChangeHandler}
+            surpriseMeSearchHandler={props.surpriseMeSearchHandler}/>
         );
         break;
       case ('has-input') :
@@ -68,6 +70,9 @@ const coreTitlePanel = (props) => {
             toggleSelectAllHandler={props.toggleSelectAllHandler}
             selectedAll={props.selectedAll}/>
         );
+        break;
+      case ('did-search') :
+        panel = null;
         break;
       default:
         panel = (
