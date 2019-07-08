@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Bungee+Shade|Cabin+Sketch|Fredericka+the+Great|Just+Another+Hand|Love+Ya+Like+A+Sister|Nanum+Pen+Script|Staatliches&display=swap');
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -5,9 +7,13 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fffde7; /*#f8f9fa; */
+  font-family: 'Staatliches', cursive;
+  padding: 10px 0;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
