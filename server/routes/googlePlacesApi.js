@@ -239,6 +239,8 @@ router.get('/surprise_me', function(req, res, next) {
         console.log(error.name + ': ' + error.message);
         if (error.name === 'ResultNotFound Error') {
           res.status(404).send('No restaurants found');
+        } else {
+          res.status(500).send();
         }
     });
 });

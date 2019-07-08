@@ -9,8 +9,6 @@ class SearchResultItem extends Component {
         return this.props.restaurant.opening_hours.weekday_text[currentDOW];
     }
 
-
-
   render() {
       return (
           <Card style={{ width: '18rem' }}>
@@ -22,7 +20,7 @@ class SearchResultItem extends Component {
                     Price: {this.props.restaurant.price_level}<br/>
                     Distance: {this.props.restaurant.distance.text}<br/>
                     Duration: {this.props.restaurant.duration.text}<br/>
-                    Opening Hours: {this.getTodaysOpeningHours()}
+                    Open Hours: {this.getTodaysOpeningHours()}
                 </Card.Text>
                 <Card.Link href={this.props.restaurant.website} target="_blank">Website</Card.Link>
             </Card.Body>

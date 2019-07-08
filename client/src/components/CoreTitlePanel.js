@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import CoreUserInputPanel from './CoreUserInputPanel';
 import CoreGeneralInputPanel from './CoreGeneralInputPanel';
+import CoreSearchResultsPanel from './../components/CoreSearchResultsPanel';
 
 //Bootstrap
 import {Button, Card, Row, Col} from 'react-bootstrap';
@@ -72,7 +73,12 @@ const coreTitlePanel = (props) => {
         );
         break;
       case ('did-search') :
-        panel = null;
+        panel = (
+          <CoreSearchResultsPanel
+            responseList={props.responseList} 
+            serverResponse={props.serverResponse}
+            resetSearchScreenHandler={props.resetSearchScreenHandler}/>
+        );
         break;
       default:
         panel = (
@@ -80,10 +86,10 @@ const coreTitlePanel = (props) => {
             <Card.Title style={cardTitleStyle}>Do you have anything in mind?</Card.Title>
             <div style={btnGroupStyle}>
               <Button style={btnStyle}
-                onClick={props.surpriseMeHandler}>No idea, that's why I'm here <span style={spanStyle}>(duh)</span></Button>
+                onClick={props.surpriseMeScreenHandler}>No idea, that's why I'm here <span style={spanStyle}>(duh)</span></Button>
               <Button 
                 style={btnStyle}
-                onClick={props.hasInputHandler}>Surprisingly, yes</Button>
+                onClick={props.hasInputScreenHandler}>Surprisingly, yes</Button>
             </div>
           </Card.Body>
         );

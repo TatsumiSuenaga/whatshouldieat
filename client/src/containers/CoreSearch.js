@@ -4,7 +4,6 @@ import axios from 'axios';
 
 import SearchItem from '../models/searchItem';
 import CoreTitlePanel from '../components/CoreTitlePanel';
-import CoreSearchResultsPanel from './../components/CoreSearchResultsPanel';
 
 //Bootstrap
 import { Container } from 'react-bootstrap';
@@ -33,7 +32,7 @@ export default class CoreSearch extends Component{
       latitude: '',
       longitude: '',
       responseList : [],
-      searchType: 'surprise',
+      searchType: 'start',
       price: -1,
       rating: -1,
       transportationType: 'driving',
@@ -220,15 +219,21 @@ export default class CoreSearch extends Component{
     });
   }
 
-  hasInputHandler = () => {
+  hasInputScreenHandler = () => {
       this.setState((prevState) => {
         return {searchType: 'has-input'}
       });
   }
 
-  surpriseMeHandler = () => {
+  surpriseMeScreenHandler = () => {
     this.setState((prevState) => {
       return {searchType: 'surprise-me'}
+    });
+  }
+
+  resetSearchScreenHandler = () => {
+    this.setState((prevState) => {
+      return {searchType: ''}
     });
   }
 
@@ -271,8 +276,8 @@ export default class CoreSearch extends Component{
             <Container style={containerStyle}>
                 <CoreTitlePanel 
                     searchType={this.state.searchType}
-                    hasInputHandler={this.hasInputHandler}
-                    surpriseMeHandler={this.surpriseMeHandler}
+                    hasInputScreenHandler={this.hasInputScreenHandler}
+                    surpriseMeScreenHandler={this.surpriseMeScreenHandler}
                     surpriseMeSearchHandler={this.surpriseMeSearchHandler}
                     restaurantSearchHandler={this.restaurantSearchHandler} 
                     searchList={this.state.searchList}
@@ -281,10 +286,10 @@ export default class CoreSearch extends Component{
                     onChangeHandler={this.onChangeHandler}
                     randomizeSearchListHandler={this.randomizeSearchListHandler}
                     toggleSelectAllHandler={this.toggleSelectAllHandler}
-                    selectedAll={this.state.selectedAll}/>
-                <CoreSearchResultsPanel
+                    selectedAll={this.state.selectedAll}
                     responseList={this.state.responseList} 
-                    serverResponse={this.state.serverResponse}/>
+                    serverResponse={this.state.serverResponse}
+                    resetSearchScreenHandler={this.resetSearchScreenHandler}/>
             </Container>
         </div>
     );

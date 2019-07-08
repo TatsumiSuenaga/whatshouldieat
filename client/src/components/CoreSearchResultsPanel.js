@@ -3,16 +3,24 @@ import React from 'react';
 import SearchResultItemPanel from './SearchResultItemPanel';
 
 //Bootstrap
-import { Row } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 
 const coreSearchResultsPanel = (props) => {
     let panel = <p>{props.serverResponse}</p>;
 
     if(props.responseList.length > 0) {
-        panel = <SearchResultItemPanel responseList={props.responseList}/>
+        panel = <SearchResultItemPanel responseList={props.responseList}/>;
+            
     }
     return (
-        <Row>{panel}</Row>
+        <Row>
+            <Col>
+                {panel}
+                <Button
+                    style={{marginTop: '20px'}}
+                    onClick={props.resetSearchScreenHandler}>Search Again!</Button>
+            </Col>
+        </Row>
     );
 };
 
