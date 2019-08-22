@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Card, Button, Form, ToggleButtonGroup, ButtonToolbar, ToggleButton, Spinner } from 'react-bootstrap';
+import { Card, 
+  Button, 
+  Form, 
+  ToggleButtonGroup, 
+  ButtonToolbar, 
+  ToggleButton, 
+  Spinner
+  } from 'react-bootstrap';
 
 function CoreGeneralInputPanel(props) {
     const [clicked, setClicked] = useState(false);
