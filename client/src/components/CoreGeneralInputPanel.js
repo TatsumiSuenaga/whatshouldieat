@@ -1,7 +1,13 @@
-import React from 'react';
-import { Card, Button, Form, ToggleButtonGroup, ButtonToolbar, ToggleButton} from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Card, Button, Form, ToggleButtonGroup, ButtonToolbar, ToggleButton, Spinner } from 'react-bootstrap';
 
-const coreGeneralInputPanel = (props) => {
+function CoreGeneralInputPanel(props) {
+    const [clicked, setClicked] = useState(false);
+
+    const searchHandler = () => {
+      setClicked(true);
+      props.surpriseMeSearchHandler();
+    }
 
     const cardTitleStyle = {
         fontSize: '1.7rem',
@@ -104,11 +110,25 @@ const coreGeneralInputPanel = (props) => {
                     </ButtonToolbar>
                 </Form.Row>
             </Form>
-            <Button
+            {!clicked ?
+              <Button
                 variant="success"
-                onClick={(event) => {props.surpriseMeSearchHandler()}}>Search</Button>
+                onClick={event => searchHandler()}>Search</Button>
+              
+              :
+              <Button variant="success" disabled>
+                <Spinner
+                  as="span"
+                  animation="border"
+                  size="sm"
+                  role="status"
+                  aria-hidden="true"
+                />
+                &nbsp;Loading...
+              </Button>
+            }
         </Card.Body>
     );
 }
 
-export default coreGeneralInputPanel;
+export default CoreGeneralInputPanel;
