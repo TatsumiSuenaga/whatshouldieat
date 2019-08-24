@@ -38,7 +38,6 @@ export default class CoreSearch extends Component{
       transportationType: 'driving',
       travelDuration: -1
     }
-    this.getUserLocation = this.getUserLocation.bind(this);
   }
 
   onChangeHandler = (event) => {
@@ -248,6 +247,7 @@ export default class CoreSearch extends Component{
   }
 
   componentDidMount() {
+    console.log('[componentDidMount]');
     this.getUserLocation();
   }
 

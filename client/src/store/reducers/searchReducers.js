@@ -1,6 +1,6 @@
 import * as SearchActions from '../actions/searchActions';
 
-export function searchResultsReducer(state = [], action) {
+const searchResultsReducer= (state = [], action) => {
   switch (action.type) {
       case SearchActions.ADD_SEARCH_RESULTS:
           return Object.assign({}, state, {
@@ -14,3 +14,5 @@ export function searchResultsReducer(state = [], action) {
       return state;
   }
 }
+
+export default searchResultsReducer;
