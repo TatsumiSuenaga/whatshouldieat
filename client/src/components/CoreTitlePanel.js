@@ -51,7 +51,7 @@ const coreTitlePanel = (props) => {
     }
     let panel = null;
 
-    switch (props.searchType) {
+    switch (props.searchScreen) {
       case ('surprise-me') :
         panel = ( 
           <CoreGeneralInputPanel
@@ -107,7 +107,7 @@ const coreTitlePanel = (props) => {
 };
 
 coreTitlePanel.propTypes = {
-  searchType: PropTypes.string.isRequired
+  searchScreen: PropTypes.string.isRequired
 }
 
 export default coreTitlePanel;

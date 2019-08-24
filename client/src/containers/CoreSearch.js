@@ -32,12 +32,11 @@ export default class CoreSearch extends Component{
       latitude: '',
       longitude: '',
       responseList : [],
-      searchType: 'start',
+      searchScreen: 'start',
       price: -1,
       rating: -1,
       transportationType: 'driving',
-      travelDuration: -1,
-      isLoading: false
+      travelDuration: -1
     }
     this.getUserLocation = this.getUserLocation.bind(this);
   }
@@ -103,15 +102,14 @@ export default class CoreSearch extends Component{
     if (restaurantQueryList.length > 0 && !isNaN(distance) && distance !== "" && distance > 0 && distance <= 10) {
       this.setState({ 
         responseList: [],
-        serverResponse: '',
-        isLoading: true
+        serverResponse: ''
       });
       restaurantQueryList.forEach((restaurantItem) => {
         axios.get('http://localhost:9000/restaurantSearch/surprise_me', {
           params: {
             location: this.state.latitude + ',' + this.state.longitude,
             radius: distance * 1610,
-            keyword: restaurantItem.searchType,
+            keyword: restaurantItem.searchScreen,
             rating: this.state.rating,
             price: this.state.price,
             travelDuration: this.state.travelDuration,
@@ -133,14 +131,12 @@ export default class CoreSearch extends Component{
             console.log(responseString);
             this.setState({ 
               responseList: [...this.state.responseList, ...responseList],
-              serverResponse: this.state.serverResponse + responseString,
-              isLoading: false 
+              serverResponse: this.state.serverResponse + responseString
             });
           } else {
             console.log('No restaurants found');
             this.setState({ 
-              serverResponse: 'No restaurants found!',
-              isLoading: false
+              serverResponse: 'No restaurants found!'
              });
           }
         })
@@ -178,8 +174,7 @@ export default class CoreSearch extends Component{
   surpriseMeSearchHandler = (event) => {
     this.setState({ 
       responseList: [],
-      serverResponse: '',
-      isLoading: true
+      serverResponse: ''
     });
     axios.get('http://localhost:9000/restaurantSearch/surprise_me', {
       params: {
@@ -196,44 +191,42 @@ export default class CoreSearch extends Component{
       if (randomRestaurant) {
         // console.log(randomRestaurant);
         this.setState({ 
-          responseList: [randomRestaurant],
-          isLoading: false 
+          responseList: [randomRestaurant]
         });
       } else {
         // console.log('No restaurants found');
         this.setState({ 
-          serverResponse: 'No restaurants found!',
-          isLoading: false
+          serverResponse: 'No restaurants found!'
           });
       }
       this.setState((prevState) => {
-        return {searchType: 'did-search'}
+        return {searchScreen: 'did-search'}
       });
     })
     .catch((error) => {
-        this.setState({ serverResponse: 'No Restaurants Found!'});
+        this.setState({ serverResponse: 'Server Error!'});
         console.log(this.state.serverResponse);
         this.setState((prevState) => {
-          return {searchType: 'did-search'}
+          return {searchScreen: 'did-search'}
         });
     });
   }
 
   hasInputScreenHandler = () => {
       this.setState((prevState) => {
-        return {searchType: 'has-input'}
+        return {searchScreen: 'has-input'}
       });
   }
 
   surpriseMeScreenHandler = () => {
     this.setState((prevState) => {
-      return {searchType: 'surprise-me'}
+      return {searchScreen: 'surprise-me'}
     });
   }
 
   resetSearchScreenHandler = () => {
     this.setState((prevState) => {
-      return {searchType: ''}
+      return {searchScreen: ''}
     });
   }
 
@@ -275,7 +268,7 @@ export default class CoreSearch extends Component{
         <div style={divStyle}>
             <Container style={containerStyle}>
                 <CoreTitlePanel 
-                    searchType={this.state.searchType}
+                    searchScreen={this.state.searchScreen}
                     hasInputScreenHandler={this.hasInputScreenHandler}
                     surpriseMeScreenHandler={this.surpriseMeScreenHandler}
                     surpriseMeSearchHandler={this.surpriseMeSearchHandler}
