@@ -9,6 +9,7 @@ export const SET_LONGITUDE = 'SET_LONGITUDE';
 export const SET_SEARCH_SCREEN = 'SET_SEARCH_SCREEN';
 export const SET_PRICE = 'SET_PRICE';
 export const SET_RATING = 'SET_RATING';
+export const SET_DISTANCE = 'SET_DISTANCE';
 
 
 /**

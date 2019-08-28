@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import * as GeneralActions from '../actions/generalActions';
 
-function travelDurationReducer(state = -1, action) {
+function travelDuration(state = -1, action) {
   switch (action.type) {
     case GeneralActions.SET_TRAVEL_DURATION:
       return action.newValue;
@@ -10,7 +10,7 @@ function travelDurationReducer(state = -1, action) {
   }
 }
 
-function transporationTypeReducer(state = 'driving', action) {
+function transporationType(state = 'driving', action) {
   switch (action.type) {
     case GeneralActions.SET_TRANSPORTATION_TYPE:
       return action.newValue;
@@ -19,7 +19,7 @@ function transporationTypeReducer(state = 'driving', action) {
   }
 }
 
-function latitudeReducer(state = '', action) {
+function latitude(state = '', action) {
   switch (action.type) {
     case GeneralActions.SET_LATITUDE:
       return action.newValue;
@@ -28,7 +28,7 @@ function latitudeReducer(state = '', action) {
   }
 }
 
-function longitudeReducer(state = '', action) {
+function longitude(state = '', action) {
   switch (action.type) {
     case GeneralActions.SET_LONGITUDE:
       return action.newValue;
@@ -37,7 +37,7 @@ function longitudeReducer(state = '', action) {
   }
 }
 
-function searchScreenReducer(state = 'start', action) {
+function searchScreen(state = 'start', action) {
   switch (action.type) {
     case GeneralActions.SET_SEARCH_SCREEN:
       return action.newValue;
@@ -46,7 +46,7 @@ function searchScreenReducer(state = 'start', action) {
   }
 }
 
-function priceReducer(state = -1, action) {
+function price(state = -1, action) {
   switch (action.type) {
     case GeneralActions.SET_PRICE:
       return action.newValue;
@@ -55,7 +55,7 @@ function priceReducer(state = -1, action) {
   }
 }
 
-function ratingReducer(state = -1, action) {
+function rating(state = -1, action) {
   switch (action.type) {
     case GeneralActions.SET_RATING:
       return action.newValue;
@@ -64,14 +64,24 @@ function ratingReducer(state = -1, action) {
   }
 }
 
+function distance(state = 3, action) {
+  switch (action.type) {
+    case GeneralActions.SET_DISTANCE:
+      return action.newValue;
+    default:
+      return state;
+  }
+}
+
 const generalReducers = combineReducers({
-  travelDurationReducer,
-  transporationTypeReducer,
-  latitudeReducer,
-  longitudeReducer,
-  searchScreenReducer,
-  priceReducer,
-  ratingReducer
+  travelDuration,
+  transporationType,
+  latitude,
+  longitude,
+  searchScreen,
+  price,
+  rating,
+  distance
 })
 
 export default generalReducers;
