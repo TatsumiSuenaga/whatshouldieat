@@ -37,15 +37,15 @@ function SurpriseMeSearchContainer() {
         const randomRestaurant = response.data;
         if (randomRestaurant) {
           // console.log(randomRestaurant);
-          dispatch(SearchActions.addSearchResults([randomRestaurant]));
+          dispatch(SearchActions.setSearchResults([randomRestaurant]));
         } else {
           // console.log('No restaurants found');
-          dispatch(SearchActions.addServerResponse('No restaurants found!'));
+          dispatch(SearchActions.setServerResponse('No restaurants found!'));
         }
         dispatch({type: SET_SEARCH_SCREEN, newValue: 'did-search'});
       })
       .catch((error) => {
-          dispatch(SearchActions.addServerResponse('Server Error!'));
+          dispatch(SearchActions.setServerResponse('Server Error!'));
           dispatch({type: SET_SEARCH_SCREEN, newValue: 'did-search'});
       });
     }

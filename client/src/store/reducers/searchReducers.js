@@ -19,8 +19,10 @@ const defSearchList = [
 
 const searchResults = (state = [], action) => {
   switch (action.type) {
-    case SearchActions.ADD_SEARCH_RESULTS:
+    case SearchActions.SET_SEARCH_RESULTS:
       return action.results;
+    case SearchActions.ADD_SEARCH_RESULTS:
+      return [...state, action.results];
     case SearchActions.REMOVE_SEARCH_RESULTS:
       return [];
   default:
@@ -35,6 +37,8 @@ const searchList = (state = defSearchList, action) => {
         ...state,
         action.searchItem
       ];
+    case SearchActions.SET_SEARCH_LIST:
+        return action.searchList;
     case SearchActions.REMOVE_SEARCH_LIST:
       // TODO
       break;
@@ -45,10 +49,21 @@ const searchList = (state = defSearchList, action) => {
 
 const serverResponse = (state = '', action) => {
   switch (action.type) {
-    case SearchActions.ADD_SERVER_RESPONSE:
+    case SearchActions.SET_SERVER_RESPONSE:
       return action.results;
+    case SearchActions.ADD_SERVER_RESPONSE:
+      return state + action.results;
     case SearchActions.REMOVE_SERVER_RESPONSE:
       return '';
+    default:
+      return state;
+  }
+}
+
+const selectedAll = (state = false, action) => {
+  switch (action.type) {
+    case SearchActions.TOGGLE_SELECTED_ALL_SEARCH_LIST:
+      return !state;
     default:
       return state;
   }
@@ -57,7 +72,8 @@ const serverResponse = (state = '', action) => {
 const searchReducers = combineReducers({
   searchResults,
   searchList,
-  serverResponse
+  serverResponse,
+  selectedAll
 })
 
 export default searchReducers;

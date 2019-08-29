@@ -1,20 +1,20 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import CoreUserInputPanel from './../components/CoreUserInputPanel';
-import CoreSearchResultsPanel from './../components/CoreSearchResultsPanel';
+import SearchResultsPanel from '../components/SearchResultsPanel';
 
 import SurpriseMeSearchContainer from './SurpriseMeSearchContainer';
+import UserPrefSearchContainer from './UserPrefSearchContainer';
 
 import { SET_SEARCH_SCREEN, SET_LATITUDE, SET_LONGITUDE } from '../store/actions/generalActions';
 
 //Bootstrap
 import { Container, Button, Card, Row, Col} from 'react-bootstrap';
 
-export const CoreTitleContainer = () => {
+export const TitleContainer = () => {
   const searchScreen = useSelector(state => state.generalReducers.searchScreen);
-  const serverResponse = useSelector(state => state.searchResultsReducer.serverResponse);
-  const searchResults = useSelector(state => state.searchResultsReducer.searchResults);
+  const serverResponse = useSelector(state => state.searchReducers.serverResponse);
+  const searchResults = useSelector(state => state.searchReducers.searchResults);
   const dispatch = useDispatch();
 
   // componentDidMount to get user locations
@@ -92,14 +92,14 @@ export const CoreTitleContainer = () => {
         <SurpriseMeSearchContainer/>
       );
       break;
-    case ('has-input') :
+    case ('has-preference') :
       panel = (
-        <CoreUserInputPanel />
+        <UserPrefSearchContainer />
       );
       break;
     case ('did-search') :
       panel = (
-        <CoreSearchResultsPanel 
+        <SearchResultsPanel 
           serverResponse={serverResponse}
           searchResults={searchResults}
           resetSearchScreenHandler={() => searchScreenHandler('')}/>
@@ -114,7 +114,7 @@ export const CoreTitleContainer = () => {
               onClick={() => searchScreenHandler('surprise-me')}>No idea, that's why I'm here <span style={spanStyle}>(duh)</span></Button>
             <Button 
               style={btnStyle}
-              onClick={() => searchScreenHandler('has-input')}>Surprisingly, yes</Button>
+              onClick={() => searchScreenHandler('has-preference')}>Yes</Button>
           </div>
         </Card.Body>
       );

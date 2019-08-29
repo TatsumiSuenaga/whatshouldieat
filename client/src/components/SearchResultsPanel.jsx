@@ -5,7 +5,7 @@ import SearchResultItemPanel from './SearchResultItemPanel';
 //Bootstrap
 import { Row, Col, Button } from 'react-bootstrap';
 
-const CoreSearchResultsPanel = (props) => {
+const SearchResultsPanel = (props) => {
     let panel = <p>{props.serverResponse}</p>;
 
     if(props.searchResults.length > 0) {
@@ -24,4 +24,4 @@ const CoreSearchResultsPanel = (props) => {
     );
 };
 
-export default CoreSearchResultsPanel;
+export default SearchResultsPanel;
