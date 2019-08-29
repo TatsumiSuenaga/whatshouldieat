@@ -3,7 +3,7 @@ import SearchResultItem from './SearchResultItem';
 
 class SearchResultItemPanel extends PureComponent {
   render() {
-    return this.props.responseList.map((searchResultItem) => {
+    return this.props.searchResults.map((searchResultItem) => {
       return (
         <SearchResultItem
           restaurant={searchResultItem}
