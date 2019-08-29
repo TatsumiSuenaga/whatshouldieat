@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import SearchItem from '../models/searchItem';
+import SearchItem from '../../models/searchItem';
 import * as SearchActions from '../actions/searchActions';
 
 const defSearchList = [

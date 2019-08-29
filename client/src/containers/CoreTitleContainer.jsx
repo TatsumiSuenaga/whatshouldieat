@@ -1,15 +1,15 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import CoreUserInputPanel from './CoreUserInputPanel';
-import CoreGeneralInputPanel from './CoreGeneralInputPanel';
-import CoreSearchResultsPanel from './../components/CoreSearchResultsPanel';
+import CoreUserInputPanel from '../components/CoreUserInputPanel';
+import CoreGeneralInputPanel from '../components/CoreGeneralInputPanel';
+import CoreSearchResultsPanel from '../components/CoreSearchResultsPanel';
 
 //Bootstrap
 import { Container, Button, Card, Row, Col} from 'react-bootstrap';
 
 export const CoreTitleContainer = () => {
-  const searchScreen = useSelector(state => state.searchScreen);
+  const searchScreen = useSelector(state => state.generalReducers.searchScreen);
   const dispatch = useDispatch();
 
   const divStyle = {

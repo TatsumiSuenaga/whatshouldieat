@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 
 import Header from './../layouts/Header';
-import CoreSearch from './CoreSearch';
+// import CoreSearch from './CoreSearch';
+import { CoreTitleContainer } from './CoreTitleContainer';
 
 
 export default class App extends Component{
@@ -9,7 +10,8 @@ export default class App extends Component{
     return (
       <>
         <Header />
-        <CoreSearch />
+        {/* <CoreSearch /> */}
+        <CoreTitleContainer />
       </>
     );
   }
