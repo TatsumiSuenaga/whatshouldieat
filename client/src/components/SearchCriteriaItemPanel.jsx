@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import SearchCriteriaItem from './SearchCriteriaItem';
+import SearchCriteriaItem from './SearchCriteriaItem.jsx';
 
 class SearchCriteriaItemPanel extends PureComponent {
   render() {

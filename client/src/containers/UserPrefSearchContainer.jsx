@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as SearchActions from '../store/actions/searchActions';
 import { SET_SEARCH_SCREEN } from '../store/actions/generalActions';
 
 import axios from 'axios';
-import SearchCriteriaItemPanel from '../components/SearchCriteriaItemPanel';
+import SearchCriteriaItemPanel from '../components/SearchCriteriaItemPanel.jsx';
 
-import {Button, Card, Form, FormControl} from 'react-bootstrap';
+import {Button, Card, Form, FormControl, Spinner} from 'react-bootstrap';
 
 const UserPrefSearchContainer = () => {
+    const [clicked, setClicked] = useState(false);
     const dispatch = useDispatch();
     const generalStore = useSelector(state => state.generalReducers);
     const selectedAll = useSelector(state => state.searchReducers.selectedAll);
@@ -17,6 +18,10 @@ const UserPrefSearchContainer = () => {
     const btnStyle = {
         margin: '5px'
     };
+
+    const screenHandler = (value) => {
+      dispatch({type: SET_SEARCH_SCREEN, newValue: value});
+    }
 
     const onChangeHandler = (event) => {
       dispatch({type: event.target.name, newValue: event.target.value});
@@ -63,6 +68,7 @@ const UserPrefSearchContainer = () => {
 
     const restaurantSearchHandler = (event) => {
       event.preventDefault();
+      setClicked(true);
       const distance = generalStore.distance;
       const searchList = [...restaurantList];
       const restaurantQueryList = searchList.filter((searchItem) => {
@@ -102,12 +108,12 @@ const UserPrefSearchContainer = () => {
               console.log('No restaurants found');
               dispatch(SearchActions.addServerResponse('No restaurants found'));
             }
-            dispatch({type: SET_SEARCH_SCREEN, newValue: 'did-search'});
+            screenHandler('did-search');
           })
           .catch((error) => {
               console.log(error);
-              dispatch(SearchActions.addServerResponse('Search Error!'));
-              dispatch({type: SET_SEARCH_SCREEN, newValue: 'did-search'});
+              dispatch(SearchActions.setServerResponse('Search Error!'));
+              screenHandler('did-search');
           });
         });
       } else {
@@ -132,44 +138,70 @@ const UserPrefSearchContainer = () => {
         }
         dispatch(SearchActions.addServerResponse(errorResponse));
         console.log(errorResponse);
-        dispatch({type: SET_SEARCH_SCREEN, newValue: 'did-search'});
+        screenHandler('did-search');
       }
     }
 
     return (
         <Card.Body>
-            <Card.Title>Choose the cuisine</Card.Title>
-            <Form onSubmit={restaurantSearchHandler}>
-                <Form.Group controlId="searchCuisineList">
-                    <SearchCriteriaItemPanel 
-                    searchList={restaurantList}
-                    changed={doSearchHandler}/>
-                </Form.Group>
-                <Form.Group controlId="searchDistance">
-                        <Form.Label>Distance (in miles)</Form.Label>
-                        <FormControl
-                        name="distance"
-                        aria-label="distance"
-                        aria-describedby="basic-addon1"
-                        value={generalStore.distance}
-                        onChange={onChangeHandler}/>
-                </Form.Group>
-                <Button
-                    style={btnStyle}
-                    variant="success"
-                    type="submit">Search</Button>
-                <Button
-                    style={btnStyle}
-                    variant="warning"
-                    onClick={(event)=> {randomizeSearchListHandler()}}>Randomize</Button>
-                <Button
-                    style={btnStyle} 
-                    variant="primary"
-                    onClick={(event) => {toggleSelectAllHandler()}}>
-                        {!selectedAll ? <span>Select All</span> : <span>Unselect All</span>}
-                </Button>
-            </Form>
-        </Card.Body>
+          <Card.Title>Choose the cuisine</Card.Title>
+          <Form onSubmit={restaurantSearchHandler}>
+            <Form.Group controlId="searchCuisineList">
+              <SearchCriteriaItemPanel 
+              searchList={restaurantList}
+              changed={doSearchHandler}/>
+            </Form.Group>
+            <Form.Group controlId="searchDistance">
+              <Form.Label>Distance (in miles)</Form.Label>
+              <FormControl
+                name="SET_DISTANCE"
+                aria-label="distance"
+                aria-describedby="basic-addon1"
+                value={generalStore.distance}
+                onChange={onChangeHandler}/>
+            </Form.Group>
+            {!clicked ?
+              <Button
+                style={btnStyle}
+                variant="success"
+                type="submit">
+                  Search
+              </Button>
+              :
+              <Button
+                style={btnStyle}
+                variant="success"
+                disabled>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  &nbsp;Loading...
+              </Button>
+            }
+            <Button
+              style={btnStyle}
+              variant="warning"
+              onClick={(event)=> {randomizeSearchListHandler()}}>
+                Randomize
+            </Button>
+            <Button
+              style={btnStyle} 
+              variant="primary"
+              onClick={(event) => {toggleSelectAllHandler()}}>
+                  {!selectedAll ? <span>Select All</span> : <span>Unselect All</span>}
+            </Button>
+            <Button
+              style={btnStyle} 
+              variant="danger"
+              onClick={() => screenHandler('start')}>
+                Back
+            </Button>
+          </Form>
+      </Card.Body>
     );
 }
 

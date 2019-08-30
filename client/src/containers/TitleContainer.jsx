@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import SearchResultsPanel from '../components/SearchResultsPanel';
+import SearchResultsPanel from '../components/SearchResultsPanel.jsx';
 
-import SurpriseMeSearchContainer from './SurpriseMeSearchContainer';
-import UserPrefSearchContainer from './UserPrefSearchContainer';
+import SurpriseMeSearchContainer from './SurpriseMeSearchContainer.jsx';
+import UserPrefSearchContainer from './UserPrefSearchContainer.jsx';
 
 import { SET_SEARCH_SCREEN, SET_LATITUDE, SET_LONGITUDE } from '../store/actions/generalActions';
 
@@ -89,12 +89,16 @@ export const TitleContainer = () => {
   switch (searchScreen) {
     case ('surprise-me') :
       panel = (
-        <SurpriseMeSearchContainer/>
+        <Card style={cardStyle}>
+          <SurpriseMeSearchContainer/>
+        </Card>
       );
       break;
     case ('has-preference') :
       panel = (
-        <UserPrefSearchContainer />
+        <Card style={cardStyle}>
+          <UserPrefSearchContainer />
+        </Card>
       );
       break;
     case ('did-search') :
@@ -107,30 +111,30 @@ export const TitleContainer = () => {
       break;
     default:
       panel = (
-        <Card.Body style={cardBodyStyle}>
-          <Card.Title style={cardTitleStyle}>Do you have anything in mind?</Card.Title>
-          <div style={btnGroupStyle}>
-            <Button style={btnStyle}
-              onClick={() => searchScreenHandler('surprise-me')}>No idea, that's why I'm here <span style={spanStyle}>(duh)</span></Button>
-            <Button 
-              style={btnStyle}
-              onClick={() => searchScreenHandler('has-preference')}>Yes</Button>
-          </div>
-        </Card.Body>
+        <Card style={cardStyle}>
+          <Card.Body style={cardBodyStyle}>
+            <Card.Title style={cardTitleStyle}>Do you have anything in mind?</Card.Title>
+            <div style={btnGroupStyle}>
+              <Button style={btnStyle}
+                onClick={() => searchScreenHandler('surprise-me')}>No idea, that's why I'm here <span style={spanStyle}>(duh)</span></Button>
+              <Button 
+                style={btnStyle}
+                onClick={() => searchScreenHandler('has-preference')}>Yes</Button>
+            </div>
+          </Card.Body>
+        </Card>
       );
   };
 
   return (
     <div style={divStyle}>
-        <Container style={containerStyle}>
-          <Row style={rowStyle}>
-            <Col>
-              <Card style={cardStyle}>
-                { panel }
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+      <Container style={containerStyle}>
+        <Row style={rowStyle}>
+          <Col>
+            { panel }
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 }

@@ -11,7 +11,7 @@ import { Card,
   ToggleButtonGroup, 
   ButtonToolbar, 
   ToggleButton, 
-  Spinner
+  Spinner,
   } from 'react-bootstrap';
 
 function SurpriseMeSearchContainer() {
@@ -19,6 +19,10 @@ function SurpriseMeSearchContainer() {
     const generalStore = useSelector(state => state.generalReducers);
 
     const dispatch = useDispatch();
+
+    const screenHandler = (value) => {
+      dispatch({type: SET_SEARCH_SCREEN, newValue: value});
+    }
 
     const surpriseMeSearchHandler = () => {
       dispatch(SearchActions.removeSearchResults());
@@ -42,11 +46,11 @@ function SurpriseMeSearchContainer() {
           // console.log('No restaurants found');
           dispatch(SearchActions.setServerResponse('No restaurants found!'));
         }
-        dispatch({type: SET_SEARCH_SCREEN, newValue: 'did-search'});
+        screenHandler('did-search');
       })
       .catch((error) => {
-          dispatch(SearchActions.setServerResponse('Server Error!'));
-          dispatch({type: SET_SEARCH_SCREEN, newValue: 'did-search'});
+        dispatch(SearchActions.setServerResponse('Server Error!'));
+        screenHandler('did-search');
       });
     }
 
@@ -160,23 +164,32 @@ function SurpriseMeSearchContainer() {
                     </ButtonToolbar>
                 </Form.Row>
             </Form>
-            {!clicked ?
+            <div style={{}}>
+              {!clicked ?
+                <Button
+                  style={{marginRight: "2.5px"}} 
+                  variant="success"
+                  onClick={searchHandler}>Search</Button>
+                :
+                <Button
+                  style={{marginRight: "2.5px"}}
+                  variant="success"
+                  disabled>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                    />
+                    &nbsp;Loading...
+                </Button>
+              }
               <Button
-                variant="success"
-                onClick={event => searchHandler()}>Search</Button>
-              
-              :
-              <Button variant="success" disabled>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                />
-                &nbsp;Loading...
-              </Button>
-            }
+                style={{marginLeft: "2.5px"}} 
+                variant="danger"
+                onClick={() => screenHandler('start')}>Back</Button>
+            </div>
         </Card.Body>
     );
 }
