@@ -1,14 +1,20 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import { render } from 'react-dom';
+
+/**
+ * Redux
+ */
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-import reducers from './store/reducers/reducers';
+import rootReducer from './store/reducers';
+
 import './index.css';
-import App from './containers/App';
+import App from './containers/App.jsx';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(reducers);
+const store = createStore(rootReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 render (
     <Provider store={store}>

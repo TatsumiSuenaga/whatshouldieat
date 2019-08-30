@@ -10,7 +10,7 @@ class SearchCriteriaItem extends Component {
             inline
             type="checkbox"
             id="default-checkbox"
-            label={this.props.searchType}
+            label={this.props.searchScreen}
             onChange={this.props.change}
             checked={this.props.searchValue} />
       )
