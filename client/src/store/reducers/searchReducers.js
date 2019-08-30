@@ -22,7 +22,11 @@ const searchResults = (state = [], action) => {
     case SearchActions.SET_SEARCH_RESULTS:
       return action.results;
     case SearchActions.ADD_SEARCH_RESULTS:
-      return [...state, action.results];
+      let isNewRestaurant = true;
+      if (state.length > 0) {
+        isNewRestaurant = state.every(restaurant => restaurant.id !== action.results.id);
+      }
+      return isNewRestaurant ? [...state, action.results] : state;
     case SearchActions.REMOVE_SEARCH_RESULTS:
       return [];
   default:

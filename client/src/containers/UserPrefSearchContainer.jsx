@@ -69,14 +69,15 @@ const UserPrefSearchContainer = () => {
     const restaurantSearchHandler = (event) => {
       event.preventDefault();
       setClicked(true);
+      dispatch(SearchActions.removeSearchResults());
+      dispatch(SearchActions.removeServerResponse());
+
       const distance = generalStore.distance;
       const searchList = [...restaurantList];
       const restaurantQueryList = searchList.filter((searchItem) => {
         return searchItem.doSearch === true;
       });
       if (restaurantQueryList.length > 0 && !isNaN(distance) && distance !== "" && distance > 0 && distance <= 10) {
-        dispatch(SearchActions.removeSearchResults());
-        dispatch(SearchActions.removeServerResponse());
         restaurantQueryList.forEach((restaurantItem) => {
           axios.get('http://localhost:9000/restaurantSearch/surprise_me', {
             params: {
@@ -103,7 +104,6 @@ const UserPrefSearchContainer = () => {
               responseString = responseList.name;
               console.log(responseString);
               dispatch(SearchActions.addSearchResults(responseList));
-              dispatch(SearchActions.addServerResponse(responseString));
             } else {
               console.log('No restaurants found');
               dispatch(SearchActions.addServerResponse('No restaurants found'));

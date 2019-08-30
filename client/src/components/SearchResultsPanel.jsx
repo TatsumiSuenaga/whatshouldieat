@@ -6,7 +6,7 @@ import SearchResultItemPanel from './SearchResultItemPanel.jsx';
 import { Row, Button } from 'react-bootstrap';
 
 const SearchResultsPanel = (props) => {
-    let panel = <p>{props.serverResponse}</p>;
+    let panel = null;
 
     if(props.searchResults.length > 0) {
         panel = (
@@ -14,6 +14,8 @@ const SearchResultsPanel = (props) => {
             <SearchResultItemPanel searchResults={props.searchResults}/>
           </Row>
         );
+    } else if (props.serverResponse.length > 0) {
+      panel = <p>{props.serverResponse}</p>;
     }
     return (
       <>
