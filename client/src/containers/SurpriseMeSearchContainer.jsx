@@ -164,10 +164,10 @@ function SurpriseMeSearchContainer() {
                 <Form.Row id="rating" style={rowPadding}>
                     <ButtonToolbar>
                         <ToggleButtonGroup type="radio" name="SET_RATING" defaultValue={-1}>
-                            <ToggleButton name="rating" value={0}  onChange={onChangeHandler}>1</ToggleButton>
-                            <ToggleButton name="rating" value={1}  onChange={onChangeHandler}>2</ToggleButton>
-                            <ToggleButton name="rating" value={2}  onChange={onChangeHandler}>3</ToggleButton>
-                            <ToggleButton name="rating" value={3}  onChange={onChangeHandler}>4</ToggleButton>
+                            <ToggleButton name="rating" value={1}  onChange={onChangeHandler}>1</ToggleButton>
+                            <ToggleButton name="rating" value={2}  onChange={onChangeHandler}>2</ToggleButton>
+                            <ToggleButton name="rating" value={3}  onChange={onChangeHandler}>3</ToggleButton>
+                            <ToggleButton name="rating" value={4}  onChange={onChangeHandler}>4</ToggleButton>
                             <ToggleButton name="rating" value={-1}  onChange={onChangeHandler}>Any</ToggleButton>
                         </ToggleButtonGroup>
                     </ButtonToolbar>
