@@ -15,7 +15,7 @@ class SearchResultItem extends Component {
             <Card.Body>
                 <Card.Title>{this.props.restaurant.name}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">
-                  {this.props.restaurant.cuisine ? this.props.restaurant.cuisine : 'Unknown Cuisine'}
+                  {this.props.restaurant.cuisine ? this.props.restaurant.cuisine : null }
                 </Card.Subtitle>
                 <Card.Text>
                     Rating: {this.props.restaurant.rating ?
