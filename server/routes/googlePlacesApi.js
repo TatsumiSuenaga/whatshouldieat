@@ -58,7 +58,7 @@ const getBaseSearchParams = (location, radius, keyword, price) => {
     params.maxprice = price;
   }
 
-  if (keyword !== TIME_CONSTRAINT) {
+  if (keyword && keyword !== TIME_CONSTRAINT) {
     params.keyword = keyword;
   }
   params.key = API_KEY;
@@ -73,16 +73,16 @@ const getRandomFromArray = (arr) => {
   return arr[Math.floor(Math.random() * (max - min + 1) + min)];
 };
 
-const sortByRating = (rating, results) => {
-  let sortedResults = [];
+const filterByRating = (rating, results) => {
+  let filteredResults = [];
   if (rating && rating !== -1) {
-    sortedResults = results.filter(restaurant => {
+    filteredResults = results.filter(restaurant => {
       return (rating > -1) ? parseInt(restaurant.rating, 10) >= rating : true;
     });
   } else {
-    sortedResults = results;
+    filteredResults = results;
   }
-  return sortedResults;
+  return filteredResults;
 };
 
 const checkForNoRestaurants = (list, func) => {
@@ -189,25 +189,27 @@ router.get('/surprise_me', function(req, res, next) {
   // init google api get request
   const location = (req.query.location) ? req.query.location : DEFAULT_LOCATION; // change this before launch, cannot support default location
   const radius = (req.query.radius) ? parseInt(req.query.radius) : DEFAULT_RADIUS;
-  // const keyword = (req.query.keyword) ? req.query.keyword : getRandomFromArray(CUISINE_LIST);
-  const keyword = (travelDuration > -1) ? 'TIME_CONSTRAINT' : getRandomFromArray(CUISINE_LIST);
-  console.log(keyword);
 
   // sorting, if any of the below has a value of -1, then it is irrelevant in sorting
   const rating = parseInt(req.query.rating);
   const price = parseInt(req.query.price);
+  const keyword = (travelDuration > -1) ? 'TIME_CONSTRAINT' : 'poop';
 
   // add min/maxprice params as price if price != -1. else do
   let randomRestaurant;
   let restaurantList;
-  axios.get(BASE_NEARBY_SEARCH_URL, getBaseSearchParams(location, radius, keyword, price))
+  axios.get(BASE_NEARBY_SEARCH_URL, getBaseSearchParams(location, radius, null, price))
     .then((response) => {
       const responseList = response.data.results;
       // console.log(responseList);
       checkForNoRestaurants(responseList, 'Initial Get Request');
       
       // mandatory rating sort of result list
-      let resultList = sortByRating(rating, responseList);
+      console.log('before filter ' + ' rating: ' + rating);
+      console.log(responseList);
+      let resultList = filterByRating(rating, responseList);
+      console.log('after filter')
+      console.log(responseList);
       checkForNoRestaurants(resultList, 'Sort By Rating');
 
       // we limit results to 25 as anymore would be unnecessary and cause performance issues
@@ -244,5 +246,69 @@ router.get('/surprise_me', function(req, res, next) {
         }
     });
 });
+
+// router.get('/user_input', function(req, res, next) {
+//   // Distance Matrix fields
+//   const travelDuration = parseInt(req.query.travelDuration);
+//   const travelMode = req.query.travelMode;
+
+//   // init google api get request
+//   const location = (req.query.location) ? req.query.location : DEFAULT_LOCATION; // change this before launch, cannot support default location
+//   const radius = (req.query.radius) ? parseInt(req.query.radius) : DEFAULT_RADIUS;
+//   // const keyword = (req.query.keyword) ? req.query.keyword : getRandomFromArray(CUISINE_LIST);
+//   const keyword = (travelDuration > -1) ? 'TIME_CONSTRAINT' : getRandomFromArray(CUISINE_LIST);
+//   console.log(keyword);
+
+//   // sorting, if any of the below has a value of -1, then it is irrelevant in sorting
+//   const rating = parseInt(req.query.rating);
+//   const price = parseInt(req.query.price);
+
+//   // add min/maxprice params as price if price != -1. else do
+//   let randomRestaurant;
+//   let restaurantList;
+//   axios.get(BASE_NEARBY_SEARCH_URL, getBaseSearchParams(location, radius, keyword, price))
+//     .then((response) => {
+//       const responseList = response.data.results;
+//       // console.log(responseList);
+//       checkForNoRestaurants(responseList, 'Initial Get Request');
+      
+//       // mandatory rating sort of result list
+//       let resultList = filterByRating(rating, responseList);
+//       checkForNoRestaurants(resultList, 'Sort By Rating');
+
+//       // we limit results to 25 as anymore would be unnecessary and cause performance issues
+//       resultList.length = resultList.length > 25 ? 25 : resultList.length;
+
+//       restaurantList = (keyword === TIME_CONSTRAINT)
+//                         ? resultList : [getRandomFromArray(resultList)];
+//       return getManyPlacesDistance(restaurantList, location, travelMode);
+//     })
+//     .then((distanceList) => {
+//       // console.log(distanceList);
+//       restaurantList = combineAndOrSortByTravelDuration(keyword, restaurantList, distanceList, travelDuration);
+//       checkForNoRestaurants(restaurantList, 'Combine and Sort By Travel Duration');
+//       randomRestaurant = (keyword === TIME_CONSTRAINT) 
+//                           ? getRandomFromArray(restaurantList) : restaurantList[0];
+//       return getPlaceDetailedInfo(randomRestaurant);
+//     }) 
+//     .then((results) => {
+//       randomRestaurant.opening_hours = results[0].data.result.opening_hours;
+//       randomRestaurant.website = results[0].data.result.website;
+//       // has found photo
+//       if (results.length > 1) {
+//         // console.log('multiple api calls complete');
+//         // randomRestaurant.photo = results[1].data;
+//       }
+//       res.send(randomRestaurant);
+//     })
+//     .catch((error) => {
+//         console.log(error.name + ': ' + error.message);
+//         if (error.name === 'ResultNotFound Error') {
+//           res.status(404).send('No restaurants found');
+//         } else {
+//           res.status(500).send();
+//         }
+//     });
+// });
 
 module.exports = router;

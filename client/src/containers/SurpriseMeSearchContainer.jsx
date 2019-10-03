@@ -49,6 +49,8 @@ function SurpriseMeSearchContainer() {
         screenHandler('did-search');
       })
       .catch((error) => {
+        console.log('Surprise-Error');
+        console.log(error);
         dispatch(SearchActions.setServerResponse('Server Error!'));
         screenHandler('did-search');
       });
@@ -95,61 +97,68 @@ function SurpriseMeSearchContainer() {
                 </Form.Row>
                 
                 <Form.Row><Form.Label style={labelRow}>How are you getting there? </Form.Label></Form.Row>
-                <Form.Row id="transportationType" style={rowPadding} name="SET_TRANSPORTATION_TYPE" onChange={onChangeHandler}>
+                <Form.Row id="transportationType" style={rowPadding} >
                         <Form.Check
                             inline
                             type="radio"
                             label="On foot"
-                            name="transportationType"
                             value={'walking'}
-                            id="transportationTypeRadios1"/>
+                            id="transportationTypeRadios1"
+                            name="SET_TRANSPORTATION_TYPE"
+                            onChange={onChangeHandler}/>
                         <Form.Check
                             inline
                             type="radio"
                             label="On a bike"
-                            name="transportationType"
+                            name="SET_TRANSPORTATION_TYPE"
                             value={'bicycling'}
-                            id="transportationTypeRadios2"/>
+                            id="transportationTypeRadios2"
+                            onChange={onChangeHandler}/>
                         <Form.Check
                             inline
                             type="radio"
                             label="On public transit"
-                            name="transportationType"
+                            name="SET_TRANSPORTATION_TYPE"
                             value={'transit'}
-                            id="transportationTypeRadios3"/>
+                            id="transportationTypeRadios3"
+                            onChange={onChangeHandler}/>
                         <Form.Check
                             inline
                             type="radio"
                             label="On a car"
-                            name="transportationType"
+                            name="SET_TRANSPORTATION_TYPE"
                             value={'driving'}
                             id="transportationTypeRadios4"
-                            defaultChecked={true} />
+                            defaultChecked={true} 
+                            onChange={onChangeHandler}/>
                 </Form.Row>
                 <Form.Row><Form.Label style={labelRow}>How much time do you have? </Form.Label></Form.Row>
-                <Form.Row id="travelDuration" style={rowPadding} name="SET_TRAVEL_DURATION" onChange={onChangeHandler}>
+                <Form.Row id="travelDuration" style={rowPadding}>
                         <Form.Check
                             inline
                             type="radio"
                             label="In a hurry (< 30mins)"
-                            name="travelDuration"
+                            name="SET_TRAVEL_DURATION" 
                             value={0}
-                            id="travelDurationRadios1"/>
+                            id="travelDurationRadios1"
+                            onChange={onChangeHandler}/>
                         <Form.Check
                             inline
                             type="radio"
                             label="On the clock (30 mins ~ 1 hour)"
-                            name="travelDuration"
+                            name="SET_TRAVEL_DURATION" 
                             value={1}
-                            id="travelDurationRadios2"/>
+                            id="travelDurationRadios2"
+                            onChange={onChangeHandler}/>
                         <Form.Check
                             inline
                             type="radio"
                             label="Time is a social construct"
-                            name="travelDuration"
+                            name="SET_TRAVEL_DURATION" 
                             value={-1}
                             defaultChecked={true}
-                            id="travelDurationRadios3"/>
+                            id="travelDurationRadios3"
+                            onChange={onChangeHandler}/>
                 </Form.Row>
                 <Form.Row><Form.Label style={labelRow}>Rating at least</Form.Label></Form.Row>
                 <Form.Row id="rating" style={rowPadding}>

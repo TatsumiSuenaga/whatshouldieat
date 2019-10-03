@@ -92,6 +92,8 @@ const UserPrefSearchContainer = () => {
           })
           .then((response) =>  {
             const responseList = response.data;
+            console.log(restaurantItem.searchScreen);
+            console.log('------');
             if (responseList) {
               console.log(responseList);
               let responseString = '';
