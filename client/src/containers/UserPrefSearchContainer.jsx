@@ -95,11 +95,6 @@ const UserPrefSearchContainer = () => {
             if (responseList) {
               console.log(responseList);
               let responseString = '';
-              // comment for now as it is only a single object returned
-              // responseList.forEach((restaurant) => {
-              //   console.log(restaurant.name);
-              //   responseString += restaurant.name + ', ';
-              // });
   
               responseString = responseList.name;
               console.log(responseString);

@@ -13,13 +13,18 @@ import './index.css';
 import App from './containers/App.jsx';
 import * as serviceWorker from './serviceWorker';
 
+import { BrowserRouter } from 'react-router-dom'
+
+
 const store = createStore(rootReducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 render (
+  <BrowserRouter>
     <Provider store={store}>
         <App />
-    </Provider>,
+    </Provider>
+  </BrowserRouter>,
     document.getElementById('root')
 );
 
