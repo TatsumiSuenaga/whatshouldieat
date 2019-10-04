@@ -34,7 +34,7 @@ export default ({restaurant}) =>  {
                 restaurant.distance.text : ' No Distance Found'}<br/>
               Duration: {restaurant.duration ?
                 restaurant.duration.text : 'No Duration Found'}<br/>
-              Open Hours: {getTodaysOpeningHours()}
+              Open Hours: {restaurant.opening_hours ? getTodaysOpeningHours() : 'No Opening Hours Found'}
           </Card.Text>
           <Card.Link href={restaurant.website} target="_blank">
             {restaurant.website? 'Website' : 'Website Not Found'}

@@ -1,7 +1,7 @@
 // Utility functions for search
 var constants = require('../shared/constants');
 var axios = require('axios');
-resultNotFoundError = (message) => {
+exports.resultNotFoundError = (message) => {
   return {
     name: 'ResultNotFound Error',
     message: message
@@ -13,7 +13,7 @@ exports.getBaseSearchParams = (location, radius, keyword, price) => {
     location: location,
     radius: radius, 
     type: constants.TYPE,
-    opennow: true,
+    opennow: false, //true,
   };
 
   if (price > -1) {
@@ -75,7 +75,7 @@ const getPlacePhoto = (restaurantPhoto) => {
   });
 };
 
-exports.getPlaceDetailedInfo = (restaurant) => {
+const getPlaceDetailedInfo = (restaurant) => {
   let apiArray = [getPlaceDetail(restaurant)];
   if (restaurant.photos) {
     apiArray.push(getPlacePhoto(restaurant.photos[0]));
@@ -108,11 +108,19 @@ exports.getManyPlacesDistance = (restaurantList, location, mode) => {
   return axios.all(apiArray);
 }
 
+exports.getManyPlacesDetailedInfo = (restaurantList) => {
+  const apiArray = restaurantList.map(restaurant => {
+    // console.log(restaurant);
+    return getPlaceDetailedInfo(restaurant);
+  });
+  // console.log(apiArray);
+  return axios.all(apiArray);
+}
+
 exports.combineAndOrSortByTravelDuration = (keyword, restaurantList, distanceList, travelDuration) => {
   let combineList = [];
   if (travelDuration > -1) {
     const timeConstraint = (travelDuration === 0) ? 600 : 1080;
-    console.log()
     for (let i = 0; i < restaurantList.length; i++) {
       const tempDistanceList = distanceList[i].data.rows[0];
       if (parseInt(tempDistanceList.elements[0].duration.value) <= timeConstraint) {
@@ -143,5 +151,33 @@ exports.combineAndOrSortByTravelDuration = (keyword, restaurantList, distanceLis
     });
   }
 
+  return combineList;
+}
+
+exports.combineDetailAndRestaurantResults = (restaurantList, detailList) => {
+  let combineList = [...restaurantList];
+  for (let i = 0; i < restaurantList.length; i++) {
+    combineList[i].opening_hours = detailList[i].data ? detailList[i].data.result.opening_hours : null;
+    combineList[i].website = detailList[i].data ?  detailList[i].data.result.website : null ;
+  }
+  return combineList;
+}
+
+exports.combineDistanceAndRestaurantResults = (keyword, restaurantList, distanceList) => {
+  let combineList = [];
+  for (let i = 0; i < restaurantList.length; i++) {
+    const tempDistanceList = distanceList[i].data.rows[0];
+    combineList.push({
+      id: restaurantList[i].id,
+      name: restaurantList[i].name,
+      place_id: restaurantList[i].place_id,
+      photos: restaurantList[i].photos,
+      rating: restaurantList[i].rating,
+      cuisine: keyword,
+      price_level: restaurantList[i].price_level,
+      distance: tempDistanceList.elements[0].distance,
+      duration: tempDistanceList.elements[0].duration
+    });
+  }
   return combineList;
 }

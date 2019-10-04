@@ -74,6 +74,7 @@ const UserPrefSearchContainer = () => {
       dispatch(SearchActions.setSearchList(searchList));
     }
 
+    // multiple cuisine search handler
     const restaurantSearchHandler = (event) => {
       event.preventDefault();
       setClicked(true);
@@ -84,14 +85,17 @@ const UserPrefSearchContainer = () => {
       const searchList = [...restaurantList];
       const restaurantQueryList = searchList.filter((searchItem) => {
         return searchItem.doSearch === true;
-      });
+      }).reduce((acc, cur) => {
+        acc.push(cur.searchScreen);
+        return acc;
+      }, []);
+
       if (restaurantQueryList.length > 0 && !isNaN(distance) && distance !== "" && distance > 0 && distance <= 10) {
-        restaurantQueryList.forEach((restaurantItem) => {
-          axios.get('http://localhost:9000/restaurantSearch/surprise_me', {
+        axios.get('http://localhost:9000/restaurantSearch/user-input', {
             params: {
               location: generalStore.latitude + ',' + generalStore.longitude,
               radius: distance * 1610,
-              keyword: restaurantItem.searchScreen,
+              keywordList: restaurantQueryList,
               rating: generalStore.rating,
               price: generalStore.price,
               travelDuration: generalStore.travelDuration,
@@ -100,15 +104,19 @@ const UserPrefSearchContainer = () => {
           })
           .then((response) =>  {
             const responseList = response.data;
-            console.log(restaurantItem.searchScreen);
-            console.log('------');
             if (responseList) {
+              console.log('user-input');
               console.log(responseList);
-              let responseString = '';
-  
-              responseString = responseList.name;
-              console.log(responseString);
-              dispatch(SearchActions.addSearchResults(responseList));
+              // remove duplicates
+              let placeIdSet = new Set();
+              let deduplicatedList = [];
+              for (let i = 0; i < responseList.length; i++) {
+                if (!placeIdSet.has(responseList[i].place_id)){
+                  deduplicatedList.push(responseList[i]);
+                  placeIdSet.add(responseList[i].place_id);
+                }
+              }
+              dispatch(SearchActions.setSearchResults(deduplicatedList));
             } else {
               console.log('No restaurants found');
               dispatch(SearchActions.addServerResponse('No restaurants found'));
@@ -120,7 +128,6 @@ const UserPrefSearchContainer = () => {
               dispatch(SearchActions.setServerResponse('Search Error!'));
               screenHandler('did-search');
           });
-        });
       } else {
         let errorResponse = '';
         if (distance !== "" && !isNaN(distance)) {

@@ -35,7 +35,7 @@ function SurpriseMeSearchContainer() {
     const surpriseMeSearchHandler = () => {
       dispatch(SearchActions.removeSearchResults());
       dispatch(SearchActions.removeServerResponse());
-      axios.get('http://localhost:9000/restaurantSearch/surprise_me', {
+      axios.get('http://localhost:9000/restaurantSearch/surprise-me', {
         params: {
           location: generalStore.latitude + ',' + generalStore.longitude,
           radius: generalStore.distance * 1610,
@@ -48,10 +48,8 @@ function SurpriseMeSearchContainer() {
       .then((response) =>  {
         const randomRestaurant = response.data;
         if (randomRestaurant) {
-          // console.log(randomRestaurant);
           dispatch(SearchActions.setSearchResults([randomRestaurant]));
         } else {
-          // console.log('No restaurants found');
           dispatch(SearchActions.setServerResponse('No restaurants found!'));
         }
         screenHandler('did-search');
