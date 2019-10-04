@@ -1,20 +1,13 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import {Form} from 'react-bootstrap';
 
-class SearchCriteriaItem extends Component {
-
-  render() {
-      return (
-          <Form.Check
-            inline
-            type="checkbox"
-            id="default-checkbox"
-            label={this.props.searchScreen}
-            onChange={this.props.change}
-            checked={this.props.searchValue} />
-      )
-  }
-}
-
-export default SearchCriteriaItem;
+export default (props) => (
+  <Form.Check
+    inline
+    type="checkbox"
+    id="default-checkbox"
+    label={props.searchScreen}
+    onChange={props.change}
+    checked={props.searchValue} />
+)

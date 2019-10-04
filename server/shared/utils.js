@@ -1,7 +1,7 @@
 // Utility functions for search
 var constants = require('../shared/constants');
 var axios = require('axios');
-exports.resultNotFoundError = (message) => {
+resultNotFoundError = (message) => {
   return {
     name: 'ResultNotFound Error',
     message: message

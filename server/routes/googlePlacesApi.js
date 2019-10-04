@@ -35,12 +35,15 @@ router.get('/surprise_me', function(req, res, next) {
       resultList.length = resultList.length > 25 ? 25 : resultList.length;
 
       // If we have a time constraint, search the whole list, else get a random restaurant
+      console.log('before distance');
+      console.log(resultList);
       restaurantList = (travelDuration > -1)
                         ? resultList : [utils.getRandomFromArray(resultList)];
       return utils.getManyPlacesDistance(restaurantList, location, travelMode);
     })
     .then((distanceList) => {
-      // console.log(distanceList);
+      console.log('after distance');
+      console.log(distanceList);
       restaurantList = utils.combineAndOrSortByTravelDuration(null, restaurantList, distanceList, travelDuration);
       utils.checkForNoRestaurants(restaurantList, 'Combine and Sort By Travel Duration');
       randomRestaurant = (travelDuration > -1) 
