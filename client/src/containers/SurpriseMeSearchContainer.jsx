@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import * as SearchActions from '../store/actions/searchActions';
-import { SET_SEARCH_SCREEN } from '../store/actions/generalActions';
+import { SET_SEARCH_SCREEN, RESET } from '../store/actions/generalActions';
 
 import axios from 'axios';
 import { Card, 
@@ -19,6 +19,14 @@ function SurpriseMeSearchContainer() {
     const generalStore = useSelector(state => state.generalReducers);
 
     const dispatch = useDispatch();
+
+    // reset fields
+    useEffect(() => {
+      dispatch(SearchActions.removeSearchResults());
+      dispatch(SearchActions.removeServerResponse());
+      dispatch({ type: RESET });
+
+    }, [dispatch]);
 
     const screenHandler = (value) => {
       dispatch({type: SET_SEARCH_SCREEN, newValue: value});
@@ -51,7 +59,7 @@ function SurpriseMeSearchContainer() {
       .catch((error) => {
         console.log('Surprise-Error');
         console.log(error);
-        dispatch(SearchActions.setServerResponse('Server Error!'));
+        dispatch(SearchActions.setServerResponse('No restaurants found!'));
         screenHandler('did-search');
       });
     }

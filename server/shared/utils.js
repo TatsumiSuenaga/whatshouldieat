@@ -111,15 +111,11 @@ exports.getManyPlacesDistance = (restaurantList, location, mode) => {
 exports.combineAndOrSortByTravelDuration = (keyword, restaurantList, distanceList, travelDuration) => {
   let combineList = [];
   if (travelDuration > -1) {
-    const timeConstraint = (travelDuration === 0) ? 360 : 960;
+    const timeConstraint = (travelDuration === 0) ? 600 : 1080;
+    console.log()
     for (let i = 0; i < restaurantList.length; i++) {
-      const tempDistanceList = distanceList[i].data.rows[0]
-      // console.log('combine loop')
-      // console.log(restaurantList[i].name + ' ' + restaurantList[i].place_id);
-      // console.log(distanceList[i].config.params.destinations);
-      // console.log(tempDistanceList.elements[0].duration.value);
+      const tempDistanceList = distanceList[i].data.rows[0];
       if (parseInt(tempDistanceList.elements[0].duration.value) <= timeConstraint) {
-              // console.log('added ' + restaurantList[i].name);
         combineList.push({
           id: restaurantList[i].id,
           name: restaurantList[i].name,

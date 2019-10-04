@@ -5,6 +5,8 @@ function travelDuration(state = -1, action) {
   switch (action.type) {
     case GeneralActions.SET_TRAVEL_DURATION:
       return action.newValue;
+    case GeneralActions.RESET: 
+      return -1;
     default:
       return state;
   }
@@ -14,6 +16,8 @@ function transporationType(state = 'driving', action) {
   switch (action.type) {
     case GeneralActions.SET_TRANSPORTATION_TYPE:
       return action.newValue;
+    case GeneralActions.RESET: 
+      return 'driving';
     default:
       return state;
   }
@@ -50,6 +54,8 @@ function price(state = -1, action) {
   switch (action.type) {
     case GeneralActions.SET_PRICE:
       return action.newValue;
+    case GeneralActions.RESET: 
+      return -1;
     default:
       return state;
   }
@@ -59,6 +65,8 @@ function rating(state = -1, action) {
   switch (action.type) {
     case GeneralActions.SET_RATING:
       return action.newValue;
+    case GeneralActions.RESET: 
+      return -1; 
     default:
       return state;
   }
@@ -68,6 +76,8 @@ function distance(state = 3, action) {
   switch (action.type) {
     case GeneralActions.SET_DISTANCE:
       return action.newValue;
+    case GeneralActions.RESET: 
+      return 3;
     default:
       return state;
   }

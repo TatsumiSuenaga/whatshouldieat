@@ -11,6 +11,8 @@ export const SET_PRICE = 'SET_PRICE';
 export const SET_RATING = 'SET_RATING';
 export const SET_DISTANCE = 'SET_DISTANCE';
 
+export const RESET = 'RESET';
+
 
 /**
  * action creators

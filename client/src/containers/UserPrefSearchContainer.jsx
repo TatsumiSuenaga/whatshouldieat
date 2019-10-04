@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import * as SearchActions from '../store/actions/searchActions';
-import { SET_SEARCH_SCREEN } from '../store/actions/generalActions';
+import { SET_SEARCH_SCREEN, RESET } from '../store/actions/generalActions';
 
 import axios from 'axios';
 import SearchCriteriaItemPanel from '../components/SearchCriteriaItemPanel.jsx';
@@ -14,6 +14,14 @@ const UserPrefSearchContainer = () => {
     const generalStore = useSelector(state => state.generalReducers);
     const selectedAll = useSelector(state => state.searchReducers.selectedAll);
     const restaurantList = useSelector(state => state.searchReducers.searchList);
+
+    // reset fields
+    useEffect(() => {
+      dispatch(SearchActions.removeSearchResults());
+      dispatch(SearchActions.removeServerResponse());
+      dispatch({ type: RESET });
+
+    }, [dispatch]);
 
     const btnStyle = {
         margin: '5px'
