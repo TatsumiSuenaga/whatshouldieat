@@ -82,6 +82,8 @@ router.get('/user-input', async function(req, res, next) {
     // sorting, if any of the below has a value of -1, then it is irrelevant in sorting
     const rating = parseInt(req.query.rating);
     const price = parseInt(req.query.price);
+
+    // concurrently searching for multiple cuisines
     const totalResults = await axios.all( keywordList.map( async keyword => {
       // add min/maxprice params as price if price != -1. else do
       let restaurantList = await axios.get(constants.BASE_NEARBY_SEARCH_URL, utils.getBaseSearchParams(location, radius, keyword, price));
@@ -107,7 +109,6 @@ router.get('/user-input', async function(req, res, next) {
       return restaurantList;
     }));
 
-    //console.log(totalResults);
     res.send(totalResults.reduce((acc, cur) => {
       console.log(cur);
       acc = acc.concat(cur);
